@@ -25,7 +25,6 @@ public class Entity {
 
     public void initPhysics(World world, Shape shape, int entityType, float xPos, float yPos){
 
-
         BodyDef bodyDef;
         FixtureDef fixtureDef;
         Fixture fixture;
@@ -45,7 +44,7 @@ public class Entity {
 
     public void draw(SpriteBatch spriteBatch){
 
-        spriteBatch.draw(texture,body.getPosition().x*Const.scale-20,body.getPosition().y*Const.scale-20,40,40);
+        spriteBatch.draw(texture,body.getPosition().x* Utils.scale-20,body.getPosition().y* Utils.scale-20,40,40);
 
     }
 
