@@ -8,17 +8,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import ua.syt0r.Entity;
 import ua.syt0r.FixtureUserData;
-import ua.syt0r.GdxGame;
 import ua.syt0r.Utils;
+import ua.syt0r.actors.DStickActor;
+import ua.syt0r.actors.FireButtonActor;
 
 import java.util.*;
 
@@ -32,8 +34,9 @@ public class GameScreen implements Screen {
 
     private OrthographicCamera hudCamera;
     private Viewport hudViewport;
-    private ua.syt0r.actors.DStickActor dStickActor;
-    private ua.syt0r.actors.FireButtonActor fireButtonActor;
+    private SpriteBatch hudBatch;
+    private DStickActor dStickActor;
+    private FireButtonActor fireButtonActor;
 
     //Game
 
@@ -41,10 +44,10 @@ public class GameScreen implements Screen {
 
     private OrthographicCamera gameCamera;
     private Viewport gameViewport;
-    private SpriteBatch spriteBatch;
+    private SpriteBatch gameBatch;
+    private Stage gameStage;
 
-    private World world;
-    private Box2DDebugRenderer debugRenderer;
+    private Circle worldBorder;
 
     private Entity player;
     private HashMap<UUID,Entity> enemies;
@@ -54,32 +57,28 @@ public class GameScreen implements Screen {
     private float time = 0f;
     private boolean shouldFire = false;
 
-    //Bezier<Vector2> curve = new Bezier<Vector2>(new Vector2(300,550),new Vector2(100,400));
+
+    private Texture bulletTexture;
 
     @Override
     public void show() {
 
-        spriteBatch = new SpriteBatch();
+        gameBatch = new SpriteBatch();
+        hudBatch = new SpriteBatch();
 
         //Initialize gameCamera and gameViewport
         gameCamera = new OrthographicCamera(VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
         gameCamera.setToOrtho(false,VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
-        spriteBatch.setProjectionMatrix(gameCamera.combined);
-        gameCamera.update();
+        gameBatch.setProjectionMatrix(gameCamera.combined);
         gameViewport = new ExtendViewport(VIRTUAL_WIDTH,VIRTUAL_HEIGHT, gameCamera);
-
-        //Box2d renderer
-        debugRenderer = new Box2DDebugRenderer();
+        gameCamera.update();
+        gameStage = new Stage(gameViewport,gameBatch);
 
         //Physics
-        world = new World(new Vector2(0,0),true);
 
-        addWorldEdges(new Vector2((-10)/ Utils.scale,-10/ Utils.scale),new Vector2((VIRTUAL_WIDTH+10)/ Utils.scale,-10/ Utils.scale)); //bottom
-        addWorldEdges(new Vector2(-10/ Utils.scale,-10/ Utils.scale),new Vector2(-10/ Utils.scale,(VIRTUAL_HEIGHT+10)/ Utils.scale)); //left
-        addWorldEdges(new Vector2((VIRTUAL_WIDTH+10)/ Utils.scale,-10/ Utils.scale),new Vector2((VIRTUAL_WIDTH+10)/ Utils.scale,(VIRTUAL_HEIGHT+10)/ Utils.scale)); //right
-        addWorldEdges(new Vector2(-10/ Utils.scale,(VIRTUAL_HEIGHT+10)/ Utils.scale),new Vector2((VIRTUAL_WIDTH+10)/ Utils.scale,(VIRTUAL_HEIGHT+10)/ Utils.scale)); //top
 
-        world.setContactListener(new PhysicsContactListener());
+        worldBorder = new Circle(VIRTUAL_WIDTH/2f,VIRTUAL_HEIGHT/2f,VIRTUAL_HEIGHT);
+
 
         //Initialize entities
         enemies = new HashMap<UUID, Entity>();
@@ -87,25 +86,26 @@ public class GameScreen implements Screen {
         toRemove = new ArrayList<UUID>();
 
         player = new Entity(new Texture("player.png"));
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(5/ Utils.scale,5/ Utils.scale);
-        player.initPhysics(world, shape, FixtureUserData.PLAYER, 150/ Utils.scale, 100/ Utils.scale);
+        player.setBody(new Circle(150,100,5));
+        player.setBounds(150,100,20,20);
+        gameStage.addActor(player);
 
         Entity enemy = new Entity(new Texture("enemy.png"));
-        shape = new PolygonShape();
-        shape.setAsBox(10/ Utils.scale,10/ Utils.scale);
-        enemy.initPhysics(world, shape, FixtureUserData.ENEMY, 150/ Utils.scale, 480/ Utils.scale);
+        enemy.setBody(new Circle(150,480,10));
         enemies.put(enemy.getUuid(),enemy);
+        gameStage.addActor(enemy);
+
+        bulletTexture = new Texture("bullet.png");
 
         //Initialize UI
         hudCamera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         hudCamera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        spriteBatch.setProjectionMatrix(hudCamera.combined);
+        hudBatch.setProjectionMatrix(hudCamera.combined);
         hudCamera.update();
         hudViewport = new ScreenViewport(hudCamera);
 
-        dStickActor = new ua.syt0r.actors.DStickActor(gameCamera);
-        fireButtonActor = new ua.syt0r.actors.FireButtonActor(gameCamera);
+        dStickActor = new DStickActor(gameCamera);
+        fireButtonActor = new FireButtonActor(gameCamera);
 
         //Controls
         Gdx.input.setInputProcessor(new InputHandler());
@@ -117,18 +117,7 @@ public class GameScreen implements Screen {
 
         //Act
 
-        world.step(delta,10,10);
-
-
-        for (UUID uuid : toRemove){
-            if (enemies.containsKey(uuid))
-                world.destroyBody(enemies.remove(uuid).getBody());
-            if (bullets.containsKey(uuid))
-                world.destroyBody(bullets.remove(uuid).getBody());
-
-        }
-
-        toRemove.clear();
+        updatePhysics();
 
         //Move enemies
 
@@ -148,49 +137,35 @@ public class GameScreen implements Screen {
 
         //Draw
 
-        gameCamera.update();
-        spriteBatch.setProjectionMatrix(gameCamera.combined);
-        spriteBatch.enableBlending();
-        spriteBatch.begin();
-
-
         Gdx.gl.glClearColor(1f, 1f, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        player.draw(spriteBatch);
-        for (Entity enemy : enemies.values())
-            enemy.draw(spriteBatch);
-        for (Entity bullet : bullets.values())
-            bullet.draw(spriteBatch);
+        gameBatch.setProjectionMatrix(gameCamera.combined);
+        gameCamera.update();
+        gameStage.draw();
 
-        spriteBatch.end();
-
-        //Draw debug physics
-
-        Matrix4 debugMatrix = gameCamera.combined.cpy();
-        debugMatrix.scale(Utils.scale, Utils.scale,1f);
-        debugRenderer.render(world, debugMatrix);
+        //Draw debug
 
         //Draw UI
         hudCamera.update();
-        spriteBatch.setProjectionMatrix(hudCamera.combined);
-        spriteBatch.enableBlending();
-        spriteBatch.begin();
+        hudBatch.setProjectionMatrix(hudCamera.combined);
+        hudBatch.enableBlending();
+        hudBatch.begin();
 
         Vector2 leftBottom = gameViewport.project(new Vector2(0,0));
         Vector2 rightTop = gameViewport.project(new Vector2(VIRTUAL_WIDTH,VIRTUAL_HEIGHT));
 
-        dStickActor.draw(spriteBatch, leftBottom.x,rightTop.y);
-        fireButtonActor.draw(spriteBatch,rightTop.x,rightTop.y);
+        dStickActor.draw(hudBatch, leftBottom.x,rightTop.y);
+        fireButtonActor.draw(hudBatch,rightTop.x,rightTop.y);
 
-        spriteBatch.end();
+        hudBatch.end();
 
     }
 
     @Override
     public void resize(int width, int height) {
-        gameViewport.update(width, height,false);
-        hudViewport.update(width,height,false);
+        gameViewport.update(width, height,true);
+        hudViewport.update(width,height,true);
     }
 
     @Override
@@ -212,33 +187,51 @@ public class GameScreen implements Screen {
     public void dispose() {
     }
 
+    private void fire(){
 
-    private void addWorldEdges(Vector2 a, Vector2 b){
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(0,0);
-        Body body = world.createBody(bodyDef);
-        FixtureDef fixtureDef = new FixtureDef();
-        EdgeShape shape = new EdgeShape();
-        shape.set(a,b);
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        Fixture fixture = body.createFixture(fixtureDef);
-        fixture.setUserData(new FixtureUserData(FixtureUserData.WORLD_EDGE,null));
-        shape.dispose();
+        Entity bullet = new Entity(bulletTexture);
+        Circle playerPos = player.getBody();
+        bullet.setBody(new Circle(playerPos.x,playerPos.y+20,5));
+        bullet.setWidth(10);
+        bullet.setHeight(10);
+        bullet.setVelocity(0,1f);
+        gameStage.addActor(bullet);
+        bullets.put(bullet.getUuid(),bullet);
 
     }
 
-    private void fire(){
+    private void updatePhysics(){
 
-        Entity bullet = new Entity(new Texture("bullet.png"));
-        CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(5/ Utils.scale);
-        Vector2 playerPos = player.getBody().getPosition();
-        bullet.initPhysics(world, circleShape, FixtureUserData.BULLET, playerPos.x, playerPos.y + 20/ Utils.scale);
-        bullets.put(bullet.getUuid(),bullet);
-        bullet.getBody().applyForce(new Vector2(0,0.1f),bullet.getBody().getWorldCenter(),true);
+        player.move();
+
+        Utils.log("num " + bullets.size());
+
+        for (Map.Entry<UUID,Entity> entry : bullets.entrySet()){
+
+            Entity entity = entry.getValue();
+            entity.move();
+
+
+            if (!worldBorder.overlaps(entity.getBody()))
+                toRemove.add(entry.getKey()); /*
+            else
+                if(entity.getBody().overlaps(player.getBody()))
+                    player.setHealth(player.getHealth()-1);
+*/
+            Utils.log("iteration");
+
+        }
+
+
+        for (UUID uuid : toRemove){
+            if (enemies.containsKey(uuid))
+                enemies.remove(uuid);
+            if (bullets.containsKey(uuid))
+                bullets.remove(uuid);
+
+        }
+
+        toRemove.clear();
 
     }
 
@@ -257,19 +250,19 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean keyDown(int keycode) {
-            Vector2 playerVelocity = player.getBody().getLinearVelocity();
+            Vector2 playerVelocity = player.getVelocity();
             switch (keycode){
                 case com.badlogic.gdx.Input.Keys.LEFT:
-                    player.getBody().setLinearVelocity(-1f,playerVelocity.y);
+                    player.setVelocity(-1f,playerVelocity.y);
                     break;
                 case com.badlogic.gdx.Input.Keys.RIGHT:
-                    player.getBody().setLinearVelocity(1f,playerVelocity.y);
+                    player.setVelocity(1f,playerVelocity.y);
                     break;
                 case com.badlogic.gdx.Input.Keys.UP:
-                    player.getBody().setLinearVelocity(playerVelocity.x,1f);
+                    player.setVelocity(playerVelocity.x,1f);
                     break;
                 case com.badlogic.gdx.Input.Keys.DOWN:
-                    player.getBody().setLinearVelocity(playerVelocity.x,-1f);
+                    player.setVelocity(playerVelocity.x,-1f);
                     break;
                 case com.badlogic.gdx.Input.Keys.Z:
                     shouldFire = true;
@@ -283,31 +276,31 @@ public class GameScreen implements Screen {
 
         @Override
         public boolean keyUp(int keycode) {
-            Vector2 playerVelocity = player.getBody().getLinearVelocity();
+            Vector2 playerVelocity = player.getVelocity();
             switch (keycode){
                 case com.badlogic.gdx.Input.Keys.LEFT:
                     if (pressed.contains(com.badlogic.gdx.Input.Keys.RIGHT))
-                        player.getBody().setLinearVelocity(1f,playerVelocity.y);
+                        player.setVelocity(1f,playerVelocity.y);
                     else
-                        player.getBody().setLinearVelocity(0,playerVelocity.y);
+                        player.setVelocity(0,playerVelocity.y);
                     break;
                 case com.badlogic.gdx.Input.Keys.RIGHT:
                     if (pressed.contains(com.badlogic.gdx.Input.Keys.LEFT))
-                        player.getBody().setLinearVelocity(-1f,playerVelocity.y);
+                        player.setVelocity(-1f,playerVelocity.y);
                     else
-                        player.getBody().setLinearVelocity(0,playerVelocity.y);
+                        player.setVelocity(0,playerVelocity.y);
                     break;
                 case com.badlogic.gdx.Input.Keys.UP:
                     if (pressed.contains(com.badlogic.gdx.Input.Keys.DOWN))
-                        player.getBody().setLinearVelocity(playerVelocity.x,-1f);
+                        player.setVelocity(playerVelocity.x,-1f);
                     else
-                        player.getBody().setLinearVelocity(playerVelocity.x,0);
+                        player.setVelocity(playerVelocity.x,0);
                     break;
                 case com.badlogic.gdx.Input.Keys.DOWN:
                     if (pressed.contains(com.badlogic.gdx.Input.Keys.UP))
-                        player.getBody().setLinearVelocity(playerVelocity.x,1f);
+                        player.setVelocity(playerVelocity.x,1f);
                     else
-                        player.getBody().setLinearVelocity(playerVelocity.x,0);
+                        player.setVelocity(playerVelocity.x,0);
                     break;
                 case Input.Keys.Z:
                     shouldFire = false;
@@ -332,8 +325,7 @@ public class GameScreen implements Screen {
             if(dStickActor.getBorders().contains(screenX,Gdx.graphics.getHeight()-screenY)){
 
                 movePointer = pointer;
-                Vector2 speed = dStickActor.getInputData(screenX,Gdx.graphics.getHeight()-screenY);
-                player.getBody().setLinearVelocity(speed.x,speed.y);
+                player.setVelocity(dStickActor.getInputData(screenX,Gdx.graphics.getHeight()-screenY));
 
             }
 
@@ -354,8 +346,10 @@ public class GameScreen implements Screen {
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
             if (pointer == movePointer){
+
                 movePointer = -1;
-                player.getBody().setLinearVelocity(0,0);
+                player.setVelocity(0,0);
+
             }
 
             if (pointer == firePointer){
@@ -373,8 +367,7 @@ public class GameScreen implements Screen {
         public boolean touchDragged(int screenX, int screenY, int pointer) {
 
             if(pointer == movePointer){
-                Vector2 speed = dStickActor.getInputData(screenX,Gdx.graphics.getHeight()-screenY);
-                player.getBody().setLinearVelocity(speed.x,speed.y);
+                player.setVelocity(dStickActor.getInputData(screenX,Gdx.graphics.getHeight()-screenY));
             }
 
             return false;

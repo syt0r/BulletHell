@@ -1,71 +1,91 @@
 package ua.syt0r;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.UUID;
 
-public class Entity {
+public class Entity extends Actor {
 
     private UUID uuid;
 
     private int health;
 
-    private Body body;
+    private Circle body;
 
     private Texture texture;
 
+    private float speed;
+
+    private Vector2 velocity;
 
     public Entity(Texture texture){
         uuid = UUID.randomUUID();
         this.texture = texture;
+        velocity = new Vector2();
+        speed = 1f;
     }
 
-
-    public void initPhysics(World world, Shape shape, int entityType, float xPos, float yPos){
-
-        BodyDef bodyDef;
-        FixtureDef fixtureDef;
-        Fixture fixture;
-
-        bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(xPos, yPos);
-        body = world.createBody(bodyDef);
-        fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        fixture = body.createFixture(fixtureDef);
-        fixture.setUserData(new FixtureUserData(entityType,uuid));
-        shape.dispose();
-
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.draw(texture,getX(),getY(),getWidth(),getHeight());
     }
 
     public void draw(SpriteBatch spriteBatch){
 
-        spriteBatch.draw(texture,body.getPosition().x* Utils.scale-20,body.getPosition().y* Utils.scale-20,40,40);
+        //spriteBatch.draw(texture,body.getPosition().x* Utils.scale-20,body.getPosition().y* Utils.scale-20,40,40);
 
     }
 
+    public void move(){
 
-    public Body getBody() {
-        return body;
+        body.setX( body.x + speed * velocity.x);
+        body.setY( body.y + speed * velocity.y);
+        setX(body.x);
+        setY(body.y);
+
     }
 
-    public void setBody(Body body) {
-        this.body = body;
-    }
-
-    public int getHealth() {
-        return health;
-    }
 
     public void setHealth(int health) {
         this.health = health;
+    }
+    public void setBody(Circle body) {
+        this.body = body;
+        setX(body.x);
+        setY(body.y);
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+    public void setVelocity(Vector2 velocity) {
+        setVelocity(velocity.x,velocity.y);
+    }
+    public void setVelocity(float x, float y){
+        velocity.x = x;
+        velocity.y = y;
     }
 
     public UUID getUuid() {
         return uuid;
     }
+    public int getHealth() {
+        return health;
+    }
+    public Circle getBody() {
+        return body;
+    }
+    public float getSpeed() {
+        return speed;
+    }
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
 }
