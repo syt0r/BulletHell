@@ -11,16 +11,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import ua.syt0r.Entity;
-import ua.syt0r.FixtureUserData;
-import ua.syt0r.Utils;
-import ua.syt0r.actors.DStickActor;
-import ua.syt0r.actors.FireButtonActor;
+import ua.syt0r.actors.entities.Entity;
+import ua.syt0r.actors.entities.Boss;
+import ua.syt0r.actors.ui.DStickActor;
+import ua.syt0r.actors.ui.FireButtonActor;
 
 import java.util.*;
 
@@ -32,9 +30,13 @@ public class GameScreen implements Screen {
 
     //UI
 
+    private SpriteBatch hudBatch;
+
     private OrthographicCamera hudCamera;
     private Viewport hudViewport;
-    private SpriteBatch hudBatch;
+
+    private Stage hudStage;
+
     private DStickActor dStickActor;
     private FireButtonActor fireButtonActor;
 
@@ -42,13 +44,18 @@ public class GameScreen implements Screen {
 
     private static final int VIRTUAL_HEIGHT = 550, VIRTUAL_WIDTH = 300;
 
+    private SpriteBatch gameBatch;
+
     private OrthographicCamera gameCamera;
     private Viewport gameViewport;
-    private SpriteBatch gameBatch;
+
     private Stage gameStage;
+
+    //Bullet calculation border
 
     private Circle worldBorder;
 
+    //Collections
     private Entity player;
     private HashMap<UUID,Entity> enemies;
     private HashMap<UUID,Entity> bullets;
@@ -56,7 +63,6 @@ public class GameScreen implements Screen {
 
     private float time = 0f;
     private boolean shouldFire = false;
-
 
     private Texture bulletTexture;
 
@@ -66,21 +72,39 @@ public class GameScreen implements Screen {
         gameBatch = new SpriteBatch();
         hudBatch = new SpriteBatch();
 
+        //Initialize UI
+
+        hudCamera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        hudCamera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        hudBatch.setProjectionMatrix(hudCamera.combined);
+        hudCamera.update();
+        hudViewport = new ScreenViewport(hudCamera);
+        hudStage = new Stage(hudViewport,hudBatch);
+
+        dStickActor = new DStickActor();
+        fireButtonActor = new FireButtonActor(hudCamera);
+
+        hudStage.addActor(dStickActor);
+        hudStage.addActor(fireButtonActor);
+
         //Initialize gameCamera and gameViewport
+
         gameCamera = new OrthographicCamera(VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
         gameCamera.setToOrtho(false,VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
         gameBatch.setProjectionMatrix(gameCamera.combined);
-        gameViewport = new ExtendViewport(VIRTUAL_WIDTH,VIRTUAL_HEIGHT, gameCamera);
         gameCamera.update();
+        gameViewport = new FitViewport(VIRTUAL_WIDTH,VIRTUAL_HEIGHT, gameCamera);
         gameStage = new Stage(gameViewport,gameBatch);
+
+        dStickActor.resize(gameViewport,VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
+        fireButtonActor.resize(gameViewport,VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
 
         //Physics
 
-
         worldBorder = new Circle(VIRTUAL_WIDTH/2f,VIRTUAL_HEIGHT/2f,VIRTUAL_HEIGHT);
 
-
         //Initialize entities
+
         enemies = new HashMap<UUID, Entity>();
         bullets = new HashMap<UUID, Entity>();
         toRemove = new ArrayList<UUID>();
@@ -97,17 +121,9 @@ public class GameScreen implements Screen {
 
         bulletTexture = new Texture("bullet.png");
 
-        //Initialize UI
-        hudCamera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        hudCamera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        hudBatch.setProjectionMatrix(hudCamera.combined);
-        hudCamera.update();
-        hudViewport = new ScreenViewport(hudCamera);
-
-        dStickActor = new DStickActor(gameCamera);
-        fireButtonActor = new FireButtonActor(gameCamera);
 
         //Controls
+
         Gdx.input.setInputProcessor(new InputHandler());
 
     }
@@ -119,13 +135,7 @@ public class GameScreen implements Screen {
 
         updatePhysics();
 
-        //Move enemies
-
-
-        //Vector2 vector2 = new Vector2();
-        //enemies.values().iterator().next().getBody().getPosition().set(curve.va);
-
-        //Fire
+        //Player fire
 
         if(shouldFire){
             time += delta;
@@ -140,25 +150,21 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(1f, 1f, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        gameBatch.setProjectionMatrix(gameCamera.combined);
-        gameCamera.update();
+        gameStage.getViewport().apply();
         gameStage.draw();
 
-        //Draw debug
-
         //Draw UI
-        hudCamera.update();
-        hudBatch.setProjectionMatrix(hudCamera.combined);
-        hudBatch.enableBlending();
-        hudBatch.begin();
 
-        Vector2 leftBottom = gameViewport.project(new Vector2(0,0));
-        Vector2 rightTop = gameViewport.project(new Vector2(VIRTUAL_WIDTH,VIRTUAL_HEIGHT));
 
-        dStickActor.draw(hudBatch, leftBottom.x,rightTop.y);
-        fireButtonActor.draw(hudBatch,rightTop.x,rightTop.y);
+        hudStage.getViewport().apply();
+        hudStage.draw();
 
-        hudBatch.end();
+       // Vector2 leftBottom = gameViewport.project(new Vector2(0,0));
+        //Vector2 rightTop = gameViewport.project(new Vector2(VIRTUAL_WIDTH,VIRTUAL_HEIGHT));
+
+        //fireButtonActor.draw(hudBatch,rightTop.x,rightTop.y);
+
+        //hudBatch.end();
 
     }
 
@@ -166,6 +172,8 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         gameViewport.update(width, height,true);
         hudViewport.update(width,height,true);
+        dStickActor.resize(gameViewport,VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
+        fireButtonActor.resize(gameViewport,VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
     }
 
     @Override
@@ -204,7 +212,7 @@ public class GameScreen implements Screen {
 
         player.move();
 
-        Utils.log("num " + bullets.size());
+        //Utils.log("num " + bullets.size());
 
         for (Map.Entry<UUID,Entity> entry : bullets.entrySet()){
 
@@ -218,7 +226,7 @@ public class GameScreen implements Screen {
                 if(entity.getBody().overlaps(player.getBody()))
                     player.setHealth(player.getHealth()-1);
 */
-            Utils.log("iteration");
+            //Utils.log("iteration");
 
         }
 
@@ -385,35 +393,14 @@ public class GameScreen implements Screen {
 
     }
 
-    private class PhysicsContactListener implements ContactListener{
 
-        @Override
-        public void beginContact(Contact contact) {
+    public void addBoss(Boss boss){
+        boss.setPosition(VIRTUAL_WIDTH/2f,VIRTUAL_HEIGHT/4f*3f);
+        gameStage.addActor(boss);
+    }
 
-            FixtureUserData aData = (FixtureUserData) contact.getFixtureA().getUserData();
-            FixtureUserData bData = (FixtureUserData) contact.getFixtureB().getUserData();
+    public void LinearShot(){
 
-            if (aData.getObjectType() == FixtureUserData.WORLD_EDGE)
-                toRemove.add((UUID)bData.getData());
-            if (bData.getObjectType() == FixtureUserData.WORLD_EDGE)
-                toRemove.add((UUID)aData.getData());
-
-        }
-
-        @Override
-        public void endContact(Contact contact) {
-
-        }
-
-        @Override
-        public void preSolve(Contact contact, Manifold oldManifold) {
-
-        }
-
-        @Override
-        public void postSolve(Contact contact, ContactImpulse impulse) {
-
-        }
     }
 
 }

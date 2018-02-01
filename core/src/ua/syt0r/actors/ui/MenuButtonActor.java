@@ -1,4 +1,4 @@
-package ua.syt0r.actors;
+package ua.syt0r.actors.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;

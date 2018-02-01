@@ -1,4 +1,4 @@
-package ua.syt0r;
+package ua.syt0r.actors.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -28,7 +28,7 @@ public class Entity extends Actor {
         uuid = UUID.randomUUID();
         this.texture = texture;
         velocity = new Vector2();
-        speed = 1f;
+        speed = 4f;
     }
 
     @Override

@@ -13,7 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import ua.syt0r.actors.MenuButtonActor;
+import ua.syt0r.actors.ui.MenuButtonActor;
+import ua.syt0r.levels.Stage1;
 
 public class MainMenuScreen implements Screen {
 
@@ -120,7 +121,7 @@ public class MainMenuScreen implements Screen {
             Vector3 touchPos = camera.unproject(new Vector3(screenX,screenY,0));
 
             if (buttonActor.getBoundaries().contains(touchPos.x,touchPos.y)){
-                ScreenManager.getInstance().showScreen(ScreenManager.ScreenEnum.GAME);
+                ScreenManager.getInstance().showScreen(new Stage1());
             }
             buttonActor.setIsPressed(false);
             return false;

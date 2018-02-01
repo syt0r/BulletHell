@@ -40,6 +40,18 @@ public class ScreenManager {
         }
     }
 
+    public void showScreen(Screen screen){
+
+        Screen currentScreen = game.getScreen();
+
+        game.setScreen(screen);
+
+        if (currentScreen != null) {
+            currentScreen.dispose();
+        }
+
+    }
+
     public enum ScreenEnum {
 
         MAIN_MENU{
