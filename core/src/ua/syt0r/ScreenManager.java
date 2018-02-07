@@ -1,7 +1,9 @@
-package ua.syt0r.screens;
+package ua.syt0r;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.MainMenuScreen;
 
 public class ScreenManager {
 

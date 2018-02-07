@@ -1,53 +1,113 @@
 package ua.syt0r.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import ua.syt0r.actors.ui.MenuButtonActor;
-import ua.syt0r.levels.Stage1;
+import ua.syt0r.*;
+import ua.syt0r.levels.Stage2;
 
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen implements ResourceScreen {
 
     private Stage stage;
-    private MenuButtonActor buttonActor;
 
     @Override
     public void show() {
 
         stage = new Stage(new ScreenViewport());
-        //stage.setDebugAll(true);
 
+        Skin skin = new Skin(new TextureAtlas("ui.atlas"));
 
-        Texture defaultTexture = new Texture("start_default.png");
-        Texture pressedTexture = new Texture("start_pressed.png");
-        buttonActor = new MenuButtonActor(stage, defaultTexture, pressedTexture);
-        stage.addActor(buttonActor);
+        Table table = new Table(skin);
+        table.setFillParent(true);
+        //table.setDebug(true);
 
-        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("logo.png")));
-        ImageButton logo = new ImageButton(drawable,drawable);
-        float width = stage.getWidth()*(3f/4);
-        float height = stage.getHeight()*(1f/2);
-        logo.setBounds(stage.getWidth()/2-width/2,stage.getHeight()/2-height/4,width,height);
-        stage.addActor(logo);
+        //Logo
 
-        Gdx.input.setInputProcessor(new Input());
+        Stack stack = new Stack();
+
+        Pixmap pixmap = new Pixmap((int)stage.getWidth()/2, (int)stage.getHeight(), Pixmap.Format.RGB888);
+        pixmap.setColor(Color.valueOf("5e5e5e"));
+        pixmap.fill();
+        stack.add(new Image(new Texture(pixmap)));
+        pixmap.dispose();
+
+        Image logo = new Image(new SpriteDrawable(new Sprite(new Texture("logo.jpg"))));
+        logo.setScaling(Scaling.fit);
+        stack.add(logo);
+
+        table.add(stack).width(stage.getWidth()/2);
+
+        //Buttons
+
+        Table buttons = new Table();
+
+        NinePatchDrawable defaultButtonPatch = new NinePatchDrawable(skin.getPatch("main_menu_button"));
+        NinePatchDrawable pressedButtonPatch = new NinePatchDrawable(skin.getPatch("main_menu_button_pressed"));
+        BitmapFont bitmapFont = Utils.generateFont("OpenSans-Regular.ttf",(int)(stage.getWidth() * 26 / 1280));
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(defaultButtonPatch,pressedButtonPatch,defaultButtonPatch,bitmapFont);
+        buttonStyle.fontColor = Color.valueOf("5e5e5e");
+        buttonStyle.downFontColor = Color.valueOf("e0e0e0");
+
+        TextButton gameStartButton = new TextButton("Game start",buttonStyle);
+        gameStartButton.getLabel().setAlignment(Align.left);
+        addButton(buttons,gameStartButton);
+
+        gameStartButton.addListener(new ClickListener(){
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ua.syt0r.ScreenManager.getInstance().showScreen(new Stage2());
+            }
+
+        });
+
+        TextButton continueButton = new TextButton("",buttonStyle);
+        continueButton.getLabel().setAlignment(Align.left);
+        addButton(buttons,continueButton);
+        continueButton.padTop(5f);
+        continueButton.padBottom(5f);
+
+        TextButton achievementsButton = new TextButton("Achievements",buttonStyle);
+        achievementsButton.getLabel().setAlignment(Align.left);
+        addButton(buttons,achievementsButton);
+
+        TextButton settingsButton = new TextButton("Settings",buttonStyle);
+        settingsButton.getLabel().setAlignment(Align.left);
+        addButton(buttons,settingsButton);
+
+        TextButton exitButton = new TextButton("Exit",buttonStyle);
+        exitButton.getLabel().setAlignment(Align.left);
+        addButton(buttons,exitButton);
+
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
+        table.add(buttons).width(stage.getWidth()/2).expandY().top().padTop(50f);
+
+        stage.addActor(table);
+
+        Gdx.input.setInputProcessor(stage);
 
     }
 
     @Override
     public void render(float delta) {
 
-        Gdx.gl.glClearColor(1f, 1f, 1f, 1);
+        Gdx.gl.glClearColor(0.878f , 0.878f , 0.878f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act(delta);
@@ -80,67 +140,15 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    class Input implements InputProcessor{
+    private void addButton(Table table, TextButton button){
 
-        Camera camera;
+        table.add(button).width(stage.getWidth()/12*5).padBottom(10f).row();
 
-        Input(){
-            camera = stage.getCamera();
-        }
+    }
 
-        @Override
-        public boolean keyDown(int keycode) {
-            return false;
-        }
-
-        @Override
-        public boolean keyUp(int keycode) {
-            return false;
-        }
-
-        @Override
-        public boolean keyTyped(char character) {
-            return false;
-        }
-
-        @Override
-        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-            Vector3 touchPos = camera.unproject(new Vector3(screenX,screenY,0));
-
-            if (buttonActor.getBoundaries().contains(touchPos.x,touchPos.y)){
-                buttonActor.setIsPressed(true);
-            }
-
-            return false;
-        }
-
-        @Override
-        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-
-            Vector3 touchPos = camera.unproject(new Vector3(screenX,screenY,0));
-
-            if (buttonActor.getBoundaries().contains(touchPos.x,touchPos.y)){
-                ScreenManager.getInstance().showScreen(new Stage1());
-            }
-            buttonActor.setIsPressed(false);
-            return false;
-        }
-
-        @Override
-        public boolean touchDragged(int screenX, int screenY, int pointer) {
-            return false;
-        }
-
-        @Override
-        public boolean mouseMoved(int screenX, int screenY) {
-            return false;
-        }
-
-        @Override
-        public boolean scrolled(int amount) {
-            return false;
-        }
+    @Override
+    public void loadResources() {
+        //Assets.load("ui.atlas",TextureAtlas.class);
     }
 
 }
