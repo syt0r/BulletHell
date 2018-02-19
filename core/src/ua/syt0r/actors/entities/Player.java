@@ -12,10 +12,13 @@ public class Player extends Entity {
 
     private float minX, maxX, minY, maxY;
 
-    public Player(int bulletType){
+    private boolean isFiring = false;
+    private float lastFireTime = 0f;
+
+    public Player(TextureAtlas textureAtlas, int bulletType){
 
         super();
-        setTexture(GameManager.assetManager.get("game.atlas", TextureAtlas.class).findRegion("player2"));
+        setTexture(textureAtlas.findRegion("player2"));
         setBody(150,100,5);
         setBounds(150,100,80,80);
         setSpeed(500f);
@@ -55,11 +58,35 @@ public class Player extends Entity {
         health--;
     }
 
+
     public void setHealth(int health) {
         this.health = health;
     }
 
     public int getHealth() {
         return health;
+    }
+
+
+    public void setFiring(boolean firing) {
+        isFiring = firing;
+    }
+
+    public boolean isFiring() {
+        return isFiring;
+    }
+
+
+    public void setLastFireTime(float lastFireTime) {
+        this.lastFireTime = lastFireTime;
+    }
+
+    public float increaseFireTime(float delta){
+        lastFireTime += delta;
+        return lastFireTime;
+    }
+
+    public float getLastFireTime() {
+        return lastFireTime;
     }
 }

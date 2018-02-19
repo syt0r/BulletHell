@@ -14,14 +14,18 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ua.syt0r.*;
-import ua.syt0r.levels.Stage2;
+import ua.syt0r.levels.Level2;
 
-public class MainMenuScreen implements ResourceScreen {
+public class MainMenuScreen implements Screen {
+
+    private State state;
 
     private Stage stage;
 
     @Override
     public void show() {
+
+        state = State.LOADING;
 
         stage = new Stage(new ScreenViewport());
 
@@ -66,7 +70,7 @@ public class MainMenuScreen implements ResourceScreen {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ua.syt0r.ScreenManager.getInstance().showScreen(new Stage2());
+                ua.syt0r.ScreenManager.getInstance().showScreen(new Level2());
             }
 
         });
@@ -110,6 +114,14 @@ public class MainMenuScreen implements ResourceScreen {
         Gdx.gl.glClearColor(0.878f , 0.878f , 0.878f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (state == State.LOADING){
+            Assets.update();
+        }else{
+
+
+
+        }
+
         stage.act(delta);
         stage.draw();
 
@@ -144,11 +156,6 @@ public class MainMenuScreen implements ResourceScreen {
 
         table.add(button).width(stage.getWidth()/12*5).padBottom(10f).row();
 
-    }
-
-    @Override
-    public void loadResources() {
-        //Assets.load("ui.atlas",TextureAtlas.class);
     }
 
 }

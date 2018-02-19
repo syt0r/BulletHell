@@ -17,7 +17,6 @@ public class Utils {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
         FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.size = size;
-        params.gamma = 0f;
         params.genMipMaps = true;
         BitmapFont f = generator.generateFont(params);
         generator.dispose();

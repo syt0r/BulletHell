@@ -25,7 +25,7 @@ public class Entity extends Actor{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture,getX()-getWidth()/2,getY()-getHeight()/2,getWidth(),getHeight());
+        batch.draw(texture,getX()-getWidth()/2,getY()-getHeight()/2,getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
     }
 
     @Override

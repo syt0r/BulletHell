@@ -18,15 +18,13 @@ public class MovementControlActor extends Actor {
     //top,left,bottom,right
     private boolean[] state = {false,false,false,false};
 
-    public MovementControlActor(){
+    public MovementControlActor(TextureAtlas atlas){
 
         center = new Vector2();
         up = new Vector2();
         down = new Vector2();
         left = new Vector2();
         right = new Vector2();
-
-        TextureAtlas atlas = GameManager.assetManager.get("game.atlas", TextureAtlas.class);
 
         defaultTexture = atlas.findRegion("movement_control_up");
         pressedTexture = atlas.findRegion("movement_control_up_pressed");

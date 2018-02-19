@@ -57,6 +57,7 @@ public class Bullet extends Entity implements Pool.Poolable{
     public void reset() {
 
         isAlive = false;
+        setRotation(0);
         remove();
 
     }

@@ -6,7 +6,7 @@ import ua.syt0r.GameManager;
 import ua.syt0r.actors.entities.Boss;
 import ua.syt0r.screens.GameScreen;
 
-public class Stage1 extends GameScreen {
+public class Level1 extends GameScreen {
 
     float time = 0, fireTime = 0;
 

@@ -8,9 +8,7 @@ public class ShootingPattern {
     private GameScreen screen;
 
     public ShootingPattern(GameScreen screen){
-
         this.screen = screen;
-
     }
 
     public boolean shoot(Enemy enemy, float time){ return false;}

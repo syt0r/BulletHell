@@ -26,9 +26,15 @@ public class Assets {
 
     }
 
-    public static void loadUIAtlas(){
+    public static void load(String fileName, Class<?> classType){
 
-        assetManager.load("ui.atlas",TextureAtlas.class);
+        assetManager.load(fileName,classType);
+
+    }
+
+    public static <T> T get(String resourceName, Class<T> classType){
+
+        return assetManager.get(resourceName,classType);
 
     }
 
@@ -36,6 +42,10 @@ public class Assets {
 
         return assetManager.update();
 
+    }
+
+    public static void dispose(){
+        assetManager.dispose();
     }
 
 

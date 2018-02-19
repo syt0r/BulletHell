@@ -15,11 +15,11 @@ public class FireControlActor extends Actor {
 
     private TextureRegion defaultTexture;
 
-    public FireControlActor(){
+    public FireControlActor(TextureAtlas atlas){
 
         center = new Vector2();
 
-        defaultTexture = GameManager.assetManager.get("game.atlas", TextureAtlas.class).findRegion("fire_button");
+        defaultTexture = atlas.findRegion("fire_button");
 
     }
 
