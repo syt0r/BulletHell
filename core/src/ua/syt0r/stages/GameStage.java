@@ -210,8 +210,11 @@ public class GameStage extends Stage implements LevelInterface {
 
                         activeBullets.removeValue(bullet,true);
                         bulletPool.free(bullet);
-                        activeEnemies.removeValue(enemy,true);
-                        enemy.remove();
+                        enemy.damage();
+                        if (!enemy.isAlive()){
+                            activeEnemies.removeValue(enemy,true);
+                            enemy.remove();
+                        }
 
                         break;
 

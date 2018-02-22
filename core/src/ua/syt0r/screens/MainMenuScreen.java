@@ -37,27 +37,13 @@ public class MainMenuScreen implements Screen {
 
         //Logo
 
-        Stack stack = new Stack();
-
-        Pixmap pixmap = new Pixmap((int)stage.getWidth()/2, (int)stage.getHeight(), Pixmap.Format.RGB888);
-        pixmap.setColor(Color.valueOf("5e5e5e"));
-        pixmap.fill();
-        stack.add(new Image(new Texture(pixmap)));
-        pixmap.dispose();
-
-        Image logo = new Image(new SpriteDrawable(new Sprite(new Texture("logo.jpg"))));
-        logo.setScaling(Scaling.fit);
-        stack.add(logo);
-
-        table.add(stack).width(stage.getWidth()/2);
-
         //Buttons
 
         Table buttons = new Table();
 
         NinePatchDrawable defaultButtonPatch = new NinePatchDrawable(skin.getPatch("main_menu_button"));
         NinePatchDrawable pressedButtonPatch = new NinePatchDrawable(skin.getPatch("main_menu_button_pressed"));
-        BitmapFont bitmapFont = Utils.generateFont("OpenSans-Regular.ttf",(int)(stage.getWidth() * 26 / 1280));
+        BitmapFont bitmapFont = Utils.generateFont("MunroSmall.ttf",(int)(stage.getWidth() * 36 / 1280));
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle(defaultButtonPatch,pressedButtonPatch,defaultButtonPatch,bitmapFont);
         buttonStyle.fontColor = Color.valueOf("5e5e5e");
         buttonStyle.downFontColor = Color.valueOf("e0e0e0");
@@ -100,7 +86,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        table.add(buttons).width(stage.getWidth()/2).expandY().top().padTop(50f);
+        table.add(buttons).width(stage.getWidth()/2).expandY().top().padTop(stage.getWidth() * 200f /1280);
 
         stage.addActor(table);
 
@@ -115,11 +101,8 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (state == State.LOADING){
-            Assets.update();
-        }else{
-
-
-
+            if (Assets.update())
+                state = State.GAME;
         }
 
         stage.act(delta);

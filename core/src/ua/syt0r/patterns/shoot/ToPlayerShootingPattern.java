@@ -1,7 +1,8 @@
-package ua.syt0r.patterns;
+package ua.syt0r.patterns.shoot;
 
 import ua.syt0r.actors.entities.Enemy;
 import ua.syt0r.actors.entities.Player;
+import ua.syt0r.patterns.ShootingPattern;
 import ua.syt0r.screens.GameScreen;
 
 /**
@@ -17,9 +18,9 @@ public class ToPlayerShootingPattern extends ShootingPattern {
     }
 
     @Override
-    public boolean shoot(Enemy enemy, float time) {
+    public boolean shoot(Enemy enemy, float delta) {
 
-        if (time * 1000  > 400){
+        if (updateTime(delta) * 1000  > 400){
 
             getScreen().DirectionalShot(enemy.getX(),enemy.getY(),400f,player.getX(),player.getY());
             return true;

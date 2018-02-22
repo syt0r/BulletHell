@@ -1,6 +1,5 @@
 package ua.syt0r.actors.entities;
 
-import com.badlogic.gdx.math.Vector2;
 import ua.syt0r.patterns.MovementPattern;
 import ua.syt0r.patterns.ShootingPattern;
 
@@ -8,18 +7,11 @@ public class Enemy extends Entity {
 
     private MovementPattern movementPattern;
     private ShootingPattern shootingPattern;
-    private float movementTime = 0f;
-    private float fireTime = 0f;
 
-    private int health;
-
-    private Vector2 tmpPos;
+    private int health = 1;
 
     public Enemy(){
-
         super();
-        tmpPos = new Vector2();
-
     }
 
     public void setMovementPattern(MovementPattern pattern){
@@ -33,24 +25,26 @@ public class Enemy extends Entity {
     @Override
     public void update(float delta) {
 
-        movementTime += delta;
-        fireTime += delta;
-
         if (movementPattern != null){
 
-            movementPattern.getPath().valueAt(tmpPos, movementTime % movementPattern.getTimeLength() / movementPattern.getTimeLength());
-            setPosition(tmpPos.x,tmpPos.y);
+            if (!movementPattern.move(this, delta))
+                movementPattern.reserTime();
 
         }
 
         if (shootingPattern != null){
 
-            if (shootingPattern.shoot(this, fireTime)) {
-                fireTime = 0f;
+            if (shootingPattern.shoot(this, delta)) {
+                shootingPattern.resetTime();
             }
 
         }
 
+    }
+
+    @Override
+    public void damage(){
+        health--;
     }
 
     public void setHealth(int health) {
@@ -61,5 +55,8 @@ public class Enemy extends Entity {
         return health;
     }
 
-    public void damage(){}
+
+    public boolean isAlive(){
+        return health !=0 ;
+    }
 }

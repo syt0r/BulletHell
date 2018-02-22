@@ -7,9 +7,10 @@ import ua.syt0r.GameManager;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.height = 720;
-		config.width = 1280;
-		config.fullscreen = false;
+		config.height = 1920;
+		config.width = 1080;
+		config.resizable = false;
+		config.fullscreen = true;
 		new LwjglApplication(new GameManager(), config);
 	}
 }
