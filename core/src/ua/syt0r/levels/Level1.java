@@ -52,4 +52,9 @@ public class Level1 extends GameScreen {
         super.render(delta);
 
     }
+
+    @Override
+    public void preLoad() {
+        LoadMusic("music/score.mp3");
+    }
 }

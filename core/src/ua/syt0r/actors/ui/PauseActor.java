@@ -1,34 +1,46 @@
 package ua.syt0r.actors.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import ua.syt0r.Assets;
 import ua.syt0r.Utils;
 
 public class PauseActor extends Stack{
 
-    private NinePatch background;
-    private BitmapFont font;
+    private SolidColorActor solidColorActor;
 
-    public PauseActor(){
+    private Table table;
 
-        background = new NinePatch(Assets.get("loading.atlas", TextureAtlas.class).findRegion("color"));
-        NinePatchDrawable drawable = new NinePatchDrawable(background);
-        addActor(new Image(background));
+    public PauseActor(Stage stage){
 
-        font = Utils.generateFont("OpenSans-Regular.ttf", (int)(Gdx.graphics.getWidth() * 100f / 1280));
+        solidColorActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"),stage.getWidth(),stage.getHeight());
+
+        add(solidColorActor);
+
+        table = new Table();
+        table.setFillParent(true);
+
+        BitmapFont font = Utils.generateFont("MunroSmall.ttf", (int) (Gdx.graphics.getWidth() * 100f / 1280));
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = font;
         TextButton textButton = new TextButton("PAUSE", textButtonStyle);
-        add(textButton);
+        //add(textButton);
 
+        table.add(textButton).fill().center();
+        add(table);
 
     }
 
+    public void show(){
+        addAction(Actions.sequence(Actions.fadeIn(0.5f)));
+    }
 }

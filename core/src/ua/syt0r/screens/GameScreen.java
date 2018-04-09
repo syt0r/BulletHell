@@ -43,8 +43,6 @@ public class GameScreen implements GameScreenInterface {
         gameStage = new GameStage(this);
         uiStage = new UIStage(this);
         uiStage.showLoading();
-        //uiStage.setDebugAll(true);
-        //gameStage.setDebugAll(true);
 
         preLoad();
 
@@ -92,12 +90,14 @@ public class GameScreen implements GameScreenInterface {
 
     @Override
     public void pause() {
-
+        if (music!=null)
+            music.pause();
     }
 
     @Override
     public void resume() {
-
+        if (music!=null)
+            music.play();
     }
 
     @Override
@@ -110,6 +110,9 @@ public class GameScreen implements GameScreenInterface {
 
         Assets.unload("game.atlas");
         Assets.unload("something.mp3");
+
+        if (music!=null && music.isPlaying())
+            music.dispose();
 
     }
 
@@ -125,9 +128,6 @@ public class GameScreen implements GameScreenInterface {
             gameStage.init();
             uiStage.showGameUI();
 
-            music = Assets.get("something.mp3",Music.class);
-            //music.play();
-
             init();
 
             //Controls
@@ -140,6 +140,25 @@ public class GameScreen implements GameScreenInterface {
 
         System.out.println("Loading...");
 
+    }
+
+    public void setState(State state){
+        switch (state){
+            case PAUSE:
+                uiStage.showPauseMenu();
+                break;
+            case GAME:
+                if (this.state == State.PAUSE)
+                    uiStage.hidePauseMenu();
+                break;
+            case DEAD:
+                ScreenManager.getInstance().showScreen(new MainMenuScreen());
+                break;
+            case WIN:
+
+                break;
+        }
+        this.state = state;
     }
 
     public GameStage getGameStage() {
@@ -156,13 +175,18 @@ public class GameScreen implements GameScreenInterface {
 
     //Available interface for stages
 
-
     public void preLoad(){
 
     }
 
     public void init(){
 
+    }
+
+    public void LoadMusic(String path){
+        music = Gdx.audio.newMusic(Gdx.files.internal(path));
+        music.setLooping(true);
+        music.play();
     }
 
     @Override

@@ -8,8 +8,6 @@ public class Enemy extends Entity {
     private MovementPattern movementPattern;
     private ShootingPattern shootingPattern;
 
-    private int health = 1;
-
     public Enemy(){
         super();
     }
@@ -42,21 +40,8 @@ public class Enemy extends Entity {
 
     }
 
-    @Override
-    public void damage(){
-        health--;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
 
     public boolean isAlive(){
-        return health !=0 ;
+        return getHealth() > 0 ;
     }
 }

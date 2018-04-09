@@ -8,19 +8,17 @@ public class Player extends Entity {
 
     public static final int MAX_HEALTH = 3;
 
-    private int health;
-
     private float minX, maxX, minY, maxY;
 
     private boolean isFiring = false;
     private float lastFireTime = 0f;
 
-    public Player(TextureAtlas textureAtlas, int bulletType){
+    public Player(TextureAtlas textureAtlas){
 
         super();
         setTexture(textureAtlas.findRegion("player2"));
         setBody(150,100,5);
-        setBounds(150,100,80,80);
+        setSize(80,80);
         setSpeed(500f);
 
         setMovementBounds(0,0,0,0);
@@ -51,20 +49,6 @@ public class Player extends Entity {
 
         getBody().setPosition(getX(),getY());
 
-    }
-
-    @Override
-    public void damage() {
-        health--;
-    }
-
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getHealth() {
-        return health;
     }
 
 

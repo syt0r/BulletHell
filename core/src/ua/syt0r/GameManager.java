@@ -7,32 +7,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class GameManager extends Game {
 
-	public static AssetManager assetManager;
-
 	private FPSLogger fpsLogger;
 	
 	@Override
 	public void create () {
 
-		assetManager = new AssetManager();
-
-		assetManager.load("loading.atlas", TextureAtlas.class);
-		assetManager.load("ui.atlas", TextureAtlas.class);
-		assetManager.load("game.atlas", TextureAtlas.class);
-
-		assetManager.finishLoading();
+		Assets.loadLoadingScreenAssets();
 
 		ScreenManager.getInstance().initialize(this);
 		ScreenManager.getInstance().showScreen(ScreenManager.ScreenEnum.MAIN_MENU);
-
-		//Assets.loadLoadingScreenAssets();
 
 		fpsLogger = new FPSLogger();
 	}
 
 	@Override
 	public void render () {
-
 		super.render();
 		fpsLogger.log();
 	}

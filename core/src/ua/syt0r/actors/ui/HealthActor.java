@@ -8,15 +8,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import ua.syt0r.Assets;
 import ua.syt0r.GameManager;
+import ua.syt0r.actors.entities.Entity;
 
-public class HealthActor extends Actor {
+public class HealthActor extends Actor implements Entity.HealthChangeListener{
 
     private NinePatch lightNinePatch,darkNinePatch,redNinePatch;
 
     private int health = 0, maxHealth;
 
     private float redGaugeX;
+
+    private Entity entity;
 
     public HealthActor(Viewport gameViewport, int VIRTUAL_WIDTH, int VIRTUAL_HEIGHT, int maxHealth, int health) {
 
@@ -29,7 +33,7 @@ public class HealthActor extends Actor {
         setSize(leftBottom.x/4*3, rightTop.y / 18);
         setPosition(leftBottom.x / 2 - getWidth()/2, rightTop.y / 8 * 7 - getHeight()/2);
 
-        TextureAtlas atlas = GameManager.assetManager.get("loading.atlas",TextureAtlas.class);
+        TextureAtlas atlas = Assets.get("loading.atlas",TextureAtlas.class);
         TextureRegion textureRegion = atlas.findRegion("color");
 
         lightNinePatch = new NinePatch(textureRegion,Color.valueOf("e0e0e0"));
@@ -68,5 +72,17 @@ public class HealthActor extends Actor {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
+    }
+
+    public void setEntity(Entity entity){
+        this.entity = entity;
+        entity.setHealthChangeListener(this);
+        setMaxHealth(entity.getHealth());
+        setHealth(entity.getHealth());
+    }
+
+    @Override
+    public void onHealthChanged() {
+        setHealth(entity.getHealth());
     }
 }

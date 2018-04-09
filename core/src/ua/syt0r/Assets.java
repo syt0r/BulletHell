@@ -2,6 +2,7 @@ package ua.syt0r;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Assets {
 
@@ -15,8 +16,15 @@ public class Assets {
 
         assetManager.load("loading.atlas",TextureAtlas.class);
         assetManager.finishLoading();
+        loadingAtlas = Assets.get("loading.atlas", TextureAtlas.class);
 
-        loadingAtlas = assetManager.get("loading",TextureAtlas.class);
+    }
+
+    public static void loadMenuUIAssets(){
+
+        assetManager.load("ui.atlas",TextureAtlas.class);
+        assetManager.finishLoading();
+        uiAtlas = Assets.get("ui.atlas", TextureAtlas.class);
 
     }
 

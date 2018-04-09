@@ -15,6 +15,9 @@ public class Entity extends Actor{
 
     private Circle body;
 
+    private int health = 1;
+    private HealthChangeListener healthChangeListener;
+
     public Entity(){
 
         velocity = new Vector2();
@@ -42,6 +45,15 @@ public class Entity extends Actor{
     }
 
 
+    public void damage(){
+
+        health--;
+        if (healthChangeListener!=null)
+            healthChangeListener.onHealthChanged();
+
+    }
+
+
     public Vector2 getVelocity() {
         return velocity;
     }
@@ -52,6 +64,10 @@ public class Entity extends Actor{
 
     public Circle getBody() {
         return body;
+    }
+
+    public int getHealth() {
+        return health;
     }
 
 
@@ -77,5 +93,17 @@ public class Entity extends Actor{
         setY(body.y);
     }
 
-    public void damage(){}
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setHealthChangeListener(HealthChangeListener healthChangeListener) {
+        this.healthChangeListener = healthChangeListener;
+    }
+
+
+    public interface HealthChangeListener{
+        void onHealthChanged();
+    }
+
 }

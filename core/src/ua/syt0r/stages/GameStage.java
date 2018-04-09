@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import ua.syt0r.State;
 import ua.syt0r.Utils;
 import ua.syt0r.actors.entities.Boss;
 import ua.syt0r.actors.entities.Bullet;
@@ -43,8 +44,6 @@ public class GameStage extends Stage implements LevelInterface {
 
     private Player player;
 
-    private float playerFireTime = 0f;
-
     //For spawn enemy calculations
     private float time = 0f;
     private int frame = 0;
@@ -78,8 +77,9 @@ public class GameStage extends Stage implements LevelInterface {
 
     public void init(){
 
-        player = new Player(gameScreen.getTextureAtlas(), Bullet.BulletType.A);
+        player = new Player(gameScreen.getTextureAtlas());
         player.setMovementBounds(0,VIRTUAL_WIDTH,0,VIRTUAL_HEIGHT);
+        player.setPosition(VIRTUAL_WIDTH/2f,VIRTUAL_HEIGHT/8f);
         addActor(player);
 
     }
@@ -194,7 +194,9 @@ public class GameStage extends Stage implements LevelInterface {
                 Utils.log("Player damaged");
 
                 player.damage();
-                //playerHealth.setHealth(player.getHealth());
+
+                if (player.getHealth() == 0)
+                    gameScreen.setState(State.DEAD);
 
                 bulletPool.freeAll(activeBullets);
                 activeBullets.clear();
@@ -230,14 +232,14 @@ public class GameStage extends Stage implements LevelInterface {
 
         if(player.isFiring()){
 
-            if(player.increaseFireTime(delta) * 1000 > 100){
+            if(player.increaseFireTime(delta) * 1000 > 80){
 
                 player.setLastFireTime(0);
 
                 Bullet bullet = bulletPool.obtain();
                 bullet.init(Bullet.BulletType.A, Bullet.Collide.ENEMY, player.getX(),player.getY());
                 bullet.setVelocity(0,1);
-                bullet.setSpeed(800f);
+                bullet.setSpeed(1200f);
                 activeBullets.add(bullet);
                 addActor(bullet);
 

@@ -15,6 +15,7 @@ public class Level2 extends GameScreen {
 
     @Override
     public void preLoad() {
+        LoadMusic("music/score.mp3");
     }
 
     @Override

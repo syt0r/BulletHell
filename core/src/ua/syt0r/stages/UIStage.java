@@ -2,16 +2,19 @@ package ua.syt0r.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import ua.syt0r.State;
 import ua.syt0r.actors.entities.Player;
 import ua.syt0r.actors.ui.*;
 import ua.syt0r.screens.GameScreen;
@@ -37,6 +40,9 @@ public class UIStage extends Stage {
 
     private ImageButton pauseButton;
     private ClickListener pauseClickListener;
+
+    private Table pauseMenu;
+    private PauseActor pauseActor;
 
     private ClickListener keyboardListener;
 
@@ -86,7 +92,7 @@ public class UIStage extends Stage {
         pauseClickListener = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ua.syt0r.ScreenManager.getInstance().showScreen(ua.syt0r.ScreenManager.ScreenEnum.MAIN_MENU);
+                gameScreen.setState(State.PAUSE);
             }
         };
         pauseButton.addListener(pauseClickListener);
@@ -95,6 +101,7 @@ public class UIStage extends Stage {
         addActor(pauseButton);
 
         playerHealth = new HealthActor(gameStage.getViewport(), gameStage.getVirtualWidth(), gameStage.getVirtualHeight(), Player.MAX_HEALTH,Player.MAX_HEALTH);
+        playerHealth.setEntity(player);
         addActor(playerHealth);
 
         keyboardListener = new KeyboardInput(player);
@@ -109,7 +116,23 @@ public class UIStage extends Stage {
         pauseButton.removeListener(pauseClickListener);
         removeListener(keyboardListener);
 
+        pauseActor = new PauseActor(this);
+        pauseActor.setBounds(0,0,getWidth(),getHeight());
+        addActor(pauseActor);
+        pauseActor.show();
+        pauseActor.addListener(new ClickListener(){
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                gameScreen.setState(State.GAME);
+                return super.keyUp(event, keycode);
+            }
 
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                gameScreen.setState(State.GAME);
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
 
     }
 
@@ -118,8 +141,9 @@ public class UIStage extends Stage {
         movementControlActor.addListener(movementClickListener);
         fireControlActor.addListener(fireClickListener);
         pauseButton.addListener(pauseClickListener);
+        addListener(keyboardListener);
 
-
+        pauseActor.remove();
 
     }
 
@@ -340,6 +364,5 @@ public class UIStage extends Stage {
 
         }
     }
-
 
 }

@@ -2,6 +2,7 @@ package ua.syt0r.actors.entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Pool;
+import ua.syt0r.Assets;
 import ua.syt0r.GameManager;
 
 public class Bullet extends Entity implements Pool.Poolable{
@@ -49,7 +50,7 @@ public class Bullet extends Entity implements Pool.Poolable{
 
         setBody(x,y,15);
 
-        setTexture(GameManager.assetManager.get("game.atlas",TextureAtlas.class).findRegion("bullet_long"));
+        setTexture(Assets.get("game.atlas",TextureAtlas.class).findRegion("bullet_long"));
 
     }
 
