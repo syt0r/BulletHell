@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -20,6 +21,8 @@ public class PauseActor extends Stack{
 
     private Table table;
 
+    private TextButton continueButton, exitButton;
+
     public PauseActor(Stage stage){
 
         solidColorActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"),stage.getWidth(),stage.getHeight());
@@ -29,18 +32,40 @@ public class PauseActor extends Stack{
         table = new Table();
         table.setFillParent(true);
 
-        BitmapFont font = Utils.generateFont("MunroSmall.ttf", (int) (Gdx.graphics.getWidth() * 100f / 1280));
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        TextButton textButton = new TextButton("PAUSE", textButtonStyle);
-        //add(textButton);
+        BitmapFont pauseFont = Utils.generateFont("MunroSmall.ttf", (int) (Gdx.graphics.getWidth() * 100f / 1280));
+        TextButton.TextButtonStyle pauseStyle = new TextButton.TextButtonStyle();
+        pauseStyle.font = pauseFont;
+        TextButton pauseButton = new TextButton("PAUSE", pauseStyle);
 
-        table.add(textButton).fill().center();
+        BitmapFont buttonsFont = Utils.generateFont("MunroSmall.ttf", (int) (Gdx.graphics.getWidth() * 50f / 1280));
+        TextButton.TextButtonStyle buttonsStyle = new TextButton.TextButtonStyle();
+        buttonsStyle.font = buttonsFont;
+        continueButton = new TextButton("continue", buttonsStyle);
+        exitButton = new TextButton("exit", buttonsStyle);
+
+
+
+        table.add(pauseButton).fill().center().row();
+        table.add(continueButton).center().row();
+        table.add(exitButton).center();
         add(table);
 
     }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+    }
+
     public void show(){
-        addAction(Actions.sequence(Actions.fadeIn(0.5f)));
+        solidColorActor.addAction(Actions.sequence(Actions.alpha(0),Actions.alpha(0.75f,0.2f)));
+    }
+
+    public void addContinueButtonListener(EventListener eventListener){
+        continueButton.addListener(eventListener);
+    }
+
+    public void addExitButtonListener(EventListener eventListener){
+        exitButton.addListener(eventListener);
     }
 }

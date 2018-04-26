@@ -8,16 +8,20 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import ua.syt0r.Assets;
+import ua.syt0r.ScreenManager;
 import ua.syt0r.State;
 import ua.syt0r.actors.entities.Player;
 import ua.syt0r.actors.ui.*;
 import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.MainMenuScreen;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -120,16 +124,18 @@ public class UIStage extends Stage {
         pauseActor.setBounds(0,0,getWidth(),getHeight());
         addActor(pauseActor);
         pauseActor.show();
-        pauseActor.addListener(new ClickListener(){
-            @Override
-            public boolean keyUp(InputEvent event, int keycode) {
-                gameScreen.setState(State.GAME);
-                return super.keyUp(event, keycode);
-            }
-
+        pauseActor.addContinueButtonListener(new ClickListener(){
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 gameScreen.setState(State.GAME);
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+
+        pauseActor.addExitButtonListener(new ClickListener(){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                ScreenManager.getInstance().showScreen(new MainMenuScreen());
                 super.touchUp(event, x, y, pointer, button);
             }
         });
