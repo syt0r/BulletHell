@@ -32,7 +32,7 @@ public class MovementPattern {
 
     }
 
-    public void reserTime(){
+    public void resetTime(){
         time = 0f;
     }
 

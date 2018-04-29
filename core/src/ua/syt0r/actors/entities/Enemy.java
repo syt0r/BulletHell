@@ -26,7 +26,7 @@ public class Enemy extends Entity {
         if (movementPattern != null){
 
             if (!movementPattern.move(this, delta))
-                movementPattern.reserTime();
+                movementPattern.resetTime();
 
         }
 

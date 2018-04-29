@@ -155,7 +155,7 @@ public class GameScreen implements GameScreenInterface {
                 ScreenManager.getInstance().showScreen(new MainMenuScreen());
                 break;
             case WIN:
-
+                uiStage.showWinMenu();
                 break;
         }
         this.state = state;

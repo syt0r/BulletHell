@@ -85,7 +85,7 @@ public class MainMenuScreen implements Screen {
         //TODO click sound
         //clickSound = Gdx.audio.newSound(Assets.get("",FileHandle.class));
         //soundClick = new SoundClick();
-        music = Gdx.audio.newMusic(Gdx.files.local("music/main_menu.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/main_menu.mp3"));
         music.play();
 
     }
@@ -233,6 +233,7 @@ public class MainMenuScreen implements Screen {
         for(int i = 0; i < levelButtons.length; i++){
 
             levelButtons[i] = getTextButton("Level " + (i+1));
+            levelButtons[i].getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
             levelButtonsTable.add(levelButtons[i]).row();
 
             //TODO update scores
@@ -248,6 +249,7 @@ public class MainMenuScreen implements Screen {
         }
 
         TextButton backButton = getTextButton("Return");
+        backButton.getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
         levelButtonsTable.add(backButton).expandY().bottom();
 
         backButton.addListener(new ClickListener(){
@@ -265,17 +267,15 @@ public class MainMenuScreen implements Screen {
 
         Table detailsTable = getTextButtonTable();
 
-        TextButton localScoreButton = getTextButton("LOCAL");
-        detailsTable.add(localScoreButton).padBottom(stage.getWidth() * 50 / 1280);
-
-        TextButton globalScoreButton = getTextButton("global");
+        TextButton globalScoreButton = getTextButton("Scores");
         detailsTable.add(globalScoreButton).padBottom(stage.getWidth() * 50 / 1280).row();
 
         for (TextButton button : scoreItems)
-            detailsTable.add(button).colspan(2).row();
+            detailsTable.add(button).row();
 
         TextButton playButton = getTextButton("Play");
-        detailsTable.add(playButton).colspan(2).expandY().bottom();
+        playButton.getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
+        detailsTable.add(playButton).expandY().bottom();
 
         table.add(detailsTable).grow().pad(stage.getWidth() * 100 / 1280);
 

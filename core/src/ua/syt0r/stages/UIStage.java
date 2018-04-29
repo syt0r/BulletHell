@@ -45,17 +45,13 @@ public class UIStage extends Stage {
     private ImageButton pauseButton;
     private ClickListener pauseClickListener;
 
-    private Table pauseMenu;
     private PauseActor pauseActor;
 
     private ClickListener keyboardListener;
 
-
-
     public UIStage(GameScreen gameScreen){
 
         this.gameScreen = gameScreen;
-
         setViewport(new ScreenViewport());
 
     }
@@ -153,7 +149,11 @@ public class UIStage extends Stage {
 
     }
 
+    public void showWinMenu(){
 
+        ScreenManager.getInstance().showScreen(new MainMenuScreen());
+
+    }
 
     private class KeyboardInput extends ClickListener{
 

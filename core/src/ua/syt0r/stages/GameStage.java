@@ -143,7 +143,6 @@ public class GameStage extends Stage implements LevelInterface {
 
             }
 
-            //TODO Level ended
             return;
 
         }
@@ -167,6 +166,9 @@ public class GameStage extends Stage implements LevelInterface {
     private void movementAndCollisions(float delta){
 
         player.update(delta);
+
+        if (activeEnemies.size == 0 && enemiesToSpawn.size == 0)
+            gameScreen.setState(State.WIN);
 
         for (Enemy enemy : activeEnemies)
             enemy.update(delta);
