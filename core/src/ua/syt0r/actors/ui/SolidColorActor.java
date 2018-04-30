@@ -21,7 +21,6 @@ public class SolidColorActor extends Actor{
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
         ninePatch.draw(batch,getX(),getY(),getOriginX(),getOriginY(),getWidth(),getHeight(),getScaleX(),getScaleY(),getRotation());
-        System.out.println("ParentAlpha " + parentAlpha  + " " + getColor().a);
         batch.setColor(color.r, color.g, color.b, 1f);
     }
 }

@@ -35,8 +35,6 @@ public class MainMenuScreen implements Screen {
 
     private TextButton.TextButtonStyle normalButtonStyle;
 
-    private int selectedLevel;
-
     private SoundClick soundClick;
     private Sound clickSound;
     private Music music;
@@ -78,9 +76,10 @@ public class MainMenuScreen implements Screen {
         NinePatchDrawable defaultButtonPatch = new NinePatchDrawable(new NinePatch(Assets.loadingAtlas.findRegion("color"),Color.valueOf("00000000")));
         NinePatchDrawable pressedButtonPatch = new NinePatchDrawable(new NinePatch(Assets.loadingAtlas.findRegion("color"),Color.valueOf("5e5e5e")));
         BitmapFont bitmapFont = Utils.generateFont("MunroSmall.ttf",(int)(stage.getWidth() * 46 / 1280));
-        normalButtonStyle = new TextButton.TextButtonStyle(defaultButtonPatch,pressedButtonPatch,defaultButtonPatch,bitmapFont);
+        normalButtonStyle = new TextButton.TextButtonStyle(defaultButtonPatch,pressedButtonPatch,pressedButtonPatch,bitmapFont);
         normalButtonStyle.fontColor = Color.valueOf("5e5e5e");
         normalButtonStyle.downFontColor = Color.valueOf("e0e0e0");
+        normalButtonStyle.checkedFontColor = normalButtonStyle.downFontColor;
 
         //TODO click sound
         //clickSound = Gdx.audio.newSound(Assets.get("",FileHandle.class));
@@ -95,7 +94,9 @@ public class MainMenuScreen implements Screen {
     }
 
     private TextButton getTextButton(String text){
-        return new TextButton(text,normalButtonStyle);
+        TextButton textButton = new TextButton(text,normalButtonStyle);
+        textButton.getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
+        return textButton;
     }
 
     @Override
@@ -142,7 +143,6 @@ public class MainMenuScreen implements Screen {
 
         table.add(button).width(stage.getWidth()/32*9).padBottom(10f).padLeft(0).padRight(0).row();
         button.getLabel().setAlignment(Align.left);
-        button.getLabelCell().padLeft(stage.getWidth() * 16 / 1280);
 
     }
 
@@ -172,40 +172,48 @@ public class MainMenuScreen implements Screen {
 
         //Buttons
 
-        Table buttons = getTextButtonTable();
+        final String[] labels = new String[]{"Game start","Endless mode","Customize","Achievements","Settings","About","Exit"};
+        final ButtonGroup<TextButton> buttonGroup = new ButtonGroup<TextButton>();
 
-        TextButton gameStartButton = getTextButton("Game start");
-        addButton(buttons,gameStartButton);
+        Table buttonsTable = getTextButtonTable();
 
-        gameStartButton.addListener(new ClickListener(){
-
+        ClickListener clickListener = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                loadMenu(MenuOptions.LEVEL_SELECT);
+                switch (buttonGroup.getCheckedIndex()){
+                    case 0:
+                        loadMenu(MenuOptions.LEVEL_SELECT);
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                    default:
+                    case 6:
+                        Gdx.app.exit();
+                }
             }
+        };
 
-        });
+        for (String label : labels){
+            TextButton textButton = getTextButton(label);
+            buttonGroup.add(textButton);
+            addButton(buttonsTable,textButton);
+            textButton.addListener(clickListener);
+        }
 
-        TextButton continueButton = getTextButton("Endless mode");
-        addButton(buttons,continueButton);
+        buttonGroup.setMaxCheckCount(1);
+        buttonGroup.setMinCheckCount(0);
+        buttonGroup.setUncheckLast(true);
+        buttonGroup.uncheckAll();
 
-        TextButton achievementsButton = getTextButton("Achievements");
-        addButton(buttons,achievementsButton);
-
-        TextButton settingsButton = getTextButton("Settings");
-        addButton(buttons,settingsButton);
-
-        TextButton exitButton = getTextButton("Exit");
-        addButton(buttons,exitButton);
-
-        exitButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
-
-        table.add(buttons).width(stage.getWidth()/3*1).expandY().top().padTop(stage.getWidth() * 200f /1280);
+        table.add(buttonsTable).width(stage.getWidth()/3*1).expandY().top().padTop(stage.getWidth() * 200f /1280);
 
         //Right Line
         table.add(rightLineActor);
@@ -216,10 +224,11 @@ public class MainMenuScreen implements Screen {
 
         //Init score items to get access to them from level button listener
 
-        TextButton[] scoreItems = new TextButton[7];
+        Label.LabelStyle labelStyle = new Label.LabelStyle(normalButtonStyle.font,normalButtonStyle.fontColor);
+        Label[] scoreItems = new Label[7];
 
         for(int i = 0; i < scoreItems.length; i++){
-            scoreItems[i] = getTextButton((i+1) + ".----------/---------- 9999999999");
+            scoreItems[i] = new Label((i+1) + ".----------/---------- 9999999999", labelStyle);
         }
 
         //Levels
@@ -228,28 +237,26 @@ public class MainMenuScreen implements Screen {
 
         Table levelButtonsTable = getTextButtonTable();
 
+        final ButtonGroup<TextButton> buttonGroup = new ButtonGroup<TextButton>();
         TextButton[] levelButtons = new TextButton[7];
 
         for(int i = 0; i < levelButtons.length; i++){
 
             levelButtons[i] = getTextButton("Level " + (i+1));
-            levelButtons[i].getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
+            buttonGroup.add(levelButtons[i]);
             levelButtonsTable.add(levelButtons[i]).row();
 
             //TODO update scores
 
-            final int finalI = i;
-            levelButtons[i].addListener(new ClickListener(){
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    selectedLevel = (finalI +1);
-                }
-            });
+
 
         }
 
+        buttonGroup.setMaxCheckCount(1);
+        buttonGroup.setMinCheckCount(1);
+        buttonGroup.setUncheckLast(true);
+
         TextButton backButton = getTextButton("Return");
-        backButton.getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
         levelButtonsTable.add(backButton).expandY().bottom();
 
         backButton.addListener(new ClickListener(){
@@ -267,24 +274,24 @@ public class MainMenuScreen implements Screen {
 
         Table detailsTable = getTextButtonTable();
 
-        TextButton globalScoreButton = getTextButton("Scores");
-        detailsTable.add(globalScoreButton).padBottom(stage.getWidth() * 50 / 1280).row();
+        Label scoreLabel = new Label("Scores",labelStyle);
+        detailsTable.add(scoreLabel).padBottom(stage.getWidth() * 50 / 1280).row();
 
-        for (TextButton button : scoreItems)
-            detailsTable.add(button).row();
+        for (Label label : scoreItems)
+            detailsTable.add(label).row();
 
         TextButton playButton = getTextButton("Play");
-        playButton.getLabelCell().padLeft(stage.getWidth() * 16 / 1280).padRight(stage.getWidth() * 16 / 1280);
         detailsTable.add(playButton).expandY().bottom();
 
         table.add(detailsTable).grow().pad(stage.getWidth() * 100 / 1280);
 
         //Level load
 
-        selectedLevel = 1;
         playButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                int selectedLevel = buttonGroup.getCheckedIndex() + 1;
 
                 Screen screen;
                 switch (selectedLevel){
@@ -315,6 +322,7 @@ public class MainMenuScreen implements Screen {
 
             }
         });
+
 
     }
 
