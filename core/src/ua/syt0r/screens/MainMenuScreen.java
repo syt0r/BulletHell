@@ -244,7 +244,7 @@ public class MainMenuScreen implements Screen {
 
             levelButtons[i] = getTextButton("Level " + (i+1));
             buttonGroup.add(levelButtons[i]);
-            levelButtonsTable.add(levelButtons[i]).row();
+            levelButtonsTable.add(levelButtons[i]).width(stage.getWidth() * 160 / 1280).row();
 
             //TODO update scores
 
@@ -257,7 +257,7 @@ public class MainMenuScreen implements Screen {
         buttonGroup.setUncheckLast(true);
 
         TextButton backButton = getTextButton("Return");
-        levelButtonsTable.add(backButton).expandY().bottom();
+        levelButtonsTable.add(backButton).width(stage.getWidth() * 160 / 1280).expandY().bottom();
 
         backButton.addListener(new ClickListener(){
             @Override

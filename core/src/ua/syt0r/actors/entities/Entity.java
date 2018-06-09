@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import ua.syt0r.patterns.EntityMovementPattern;
 
 public class Entity extends Actor{
 
@@ -17,6 +18,8 @@ public class Entity extends Actor{
 
     private int health = 1;
     private HealthChangeListener healthChangeListener;
+
+    private EntityMovementPattern entityMovementPattern;
 
     public Entity(){
 
@@ -39,8 +42,7 @@ public class Entity extends Actor{
 
     public void update(float delta){
 
-        moveBy(velocity.x * speed * delta, velocity.y * speed * delta);
-        body.setPosition(getX(),getY());
+        entityMovementPattern.update(this, delta);
 
     }
 
@@ -70,6 +72,9 @@ public class Entity extends Actor{
         return health;
     }
 
+    public EntityMovementPattern getEntityMovementPattern() {
+        return entityMovementPattern;
+    }
 
     public void setVelocity(Vector2 velocity) {
         setVelocity(velocity.x, velocity.y);
@@ -95,6 +100,10 @@ public class Entity extends Actor{
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public void setEntityMovementPattern(EntityMovementPattern entityMovementPattern) {
+        this.entityMovementPattern = entityMovementPattern;
     }
 
     public void setHealthChangeListener(HealthChangeListener healthChangeListener) {

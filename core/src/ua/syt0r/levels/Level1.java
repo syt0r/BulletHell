@@ -1,9 +1,11 @@
 package ua.syt0r.levels;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import ua.syt0r.GameManager;
+import ua.syt0r.Assets;
 import ua.syt0r.actors.entities.Boss;
+import ua.syt0r.actors.entities.Enemy;
+import ua.syt0r.actors.entities.Player;
+import ua.syt0r.patterns.ShootingPattern;
 import ua.syt0r.screens.GameScreen;
 
 public class Level1 extends GameScreen {
@@ -56,5 +58,33 @@ public class Level1 extends GameScreen {
     @Override
     public void preLoad() {
         LoadMusic("music/score.mp3");
+    }
+
+    @Override
+    public void init() {
+
+        TextureAtlas atlas = Assets.get("game.atlas",TextureAtlas.class);
+
+        ShootingPattern pattern1 = new ShootingPattern(this){
+
+            private Player player = getScreen().getGameStage().getPlayer();
+
+            @Override
+            public boolean shoot(Enemy enemy, float delta) {
+
+
+
+                return false;
+            }
+
+        };
+
+        final Enemy enemy1 = new Enemy();
+        enemy1.setTexture(atlas.findRegion("enemy1"));
+        enemy1.setBody(500,1000,10);
+        enemy1.setBounds(500,1000,80,80);
+        enemy1.setShootingPattern(pattern1);
+        addEnemy(enemy1, 50);
+
     }
 }

@@ -15,9 +15,10 @@ import ua.syt0r.actors.entities.Bullet;
 import ua.syt0r.actors.entities.Enemy;
 import ua.syt0r.actors.entities.Player;
 import ua.syt0r.levels.LevelInterface;
+import ua.syt0r.patterns.EntityMovementPattern;
+import ua.syt0r.patterns.bullet.EntityLinearMovementPattern;
 import ua.syt0r.screens.GameScreen;
 
-import javax.swing.*;
 import java.util.AbstractMap;
 import java.util.Map;
 
@@ -51,6 +52,8 @@ public class GameStage extends Stage implements LevelInterface {
     private ShapeRenderer debugRenderer;
     private boolean debug = false;
 
+    //Performs default linear movement
+    private EntityMovementPattern entityLinearMovementPattern;
 
     public GameStage(GameScreen gameScreen){
 
@@ -77,10 +80,14 @@ public class GameStage extends Stage implements LevelInterface {
 
     public void init(){
 
+        entityLinearMovementPattern = new EntityLinearMovementPattern();
+
         player = new Player(gameScreen.getTextureAtlas());
         player.setMovementBounds(0,VIRTUAL_WIDTH,0,VIRTUAL_HEIGHT);
         player.setPosition(VIRTUAL_WIDTH/2f,VIRTUAL_HEIGHT/8f);
+        player.setEntityMovementPattern(entityLinearMovementPattern);
         addActor(player);
+
 
     }
 
@@ -242,6 +249,7 @@ public class GameStage extends Stage implements LevelInterface {
                 bullet.init(Bullet.BulletType.A, Bullet.Collide.ENEMY, player.getX(),player.getY());
                 bullet.setVelocity(0,1);
                 bullet.setSpeed(1200f);
+                bullet.setEntityMovementPattern(entityLinearMovementPattern);
                 activeBullets.add(bullet);
                 addActor(bullet);
 
@@ -270,6 +278,7 @@ public class GameStage extends Stage implements LevelInterface {
         bullet.init(Bullet.BulletType.A, Bullet.Collide.PLAYER, x, y);
         bullet.setVelocity(0,-1);
         bullet.setSpeed(speed);
+        bullet.setEntityMovementPattern(entityLinearMovementPattern);
         activeBullets.add(bullet);
         addActor(bullet);
     }
@@ -283,6 +292,7 @@ public class GameStage extends Stage implements LevelInterface {
         bullet.setVelocity((float) (Math.cos(angle)-Math.sin(angle)),(float) (Math.sin(angle)+Math.cos(angle)));
         bullet.setSpeed(speed);
         bullet.setOrigin(bullet.getWidth()/2,bullet.getHeight()/2);
+        bullet.setEntityMovementPattern(entityLinearMovementPattern);
         activeBullets.add(bullet);
         addActor(bullet);
     }
