@@ -152,7 +152,7 @@ public class GameScreen implements GameScreenInterface {
                     uiStage.hidePauseMenu();
                 break;
             case DEAD:
-                ScreenManager.getInstance().showScreen(new MainMenuScreen());
+                uiStage.showDeadMenu();
                 break;
             case WIN:
                 uiStage.showWinMenu();

@@ -46,6 +46,8 @@ public class UIStage extends Stage {
     private ClickListener pauseClickListener;
 
     private PauseActor pauseActor;
+    private DiedActor diedActor;
+    private WinActor winActor;
 
     private ClickListener keyboardListener;
 
@@ -107,6 +109,34 @@ public class UIStage extends Stage {
         keyboardListener = new KeyboardInput(player);
         addListener(keyboardListener);
 
+        //Init invisible menus
+        //Pause
+        pauseActor = new PauseActor(this);
+        pauseActor.setBounds(0,0,getWidth(),getHeight());
+        pauseActor.addContinueButtonListener(new ClickListener(){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                gameScreen.setState(State.GAME);
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+        pauseActor.addExitButtonListener(new ClickListener(){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                ScreenManager.getInstance().showScreen(new MainMenuScreen());
+                super.touchUp(event, x, y, pointer, button);
+            }
+        });
+        //Dead
+        diedActor = new DiedActor(this);
+        diedActor.setBounds(0,0,getWidth(),getHeight());
+        diedActor.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ScreenManager.getInstance().showScreen(new MainMenuScreen());
+            }
+        });
+
     }
 
     public void showPauseMenu(){
@@ -116,25 +146,8 @@ public class UIStage extends Stage {
         pauseButton.removeListener(pauseClickListener);
         removeListener(keyboardListener);
 
-        pauseActor = new PauseActor(this);
-        pauseActor.setBounds(0,0,getWidth(),getHeight());
         addActor(pauseActor);
         pauseActor.show();
-        pauseActor.addContinueButtonListener(new ClickListener(){
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                gameScreen.setState(State.GAME);
-                super.touchUp(event, x, y, pointer, button);
-            }
-        });
-
-        pauseActor.addExitButtonListener(new ClickListener(){
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                ScreenManager.getInstance().showScreen(new MainMenuScreen());
-                super.touchUp(event, x, y, pointer, button);
-            }
-        });
 
     }
 
@@ -151,7 +164,14 @@ public class UIStage extends Stage {
 
     public void showWinMenu(){
 
-        ScreenManager.getInstance().showScreen(new MainMenuScreen());
+        addActor(winActor);
+
+    }
+
+    public void showDeadMenu(){
+
+        addActor(diedActor);
+        diedActor.show();
 
     }
 
