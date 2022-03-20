@@ -3,7 +3,7 @@ package ua.syt0r.patterns.shoot;
 import ua.syt0r.actors.entities.Enemy;
 import ua.syt0r.actors.entities.Player;
 import ua.syt0r.patterns.ShootingPattern;
-import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.GameLevelScreen;
 
 /**
  * Created by Yaroslav on 2018/02/18.
@@ -12,7 +12,7 @@ public class ToPlayerShootingPattern extends ShootingPattern {
 
     private Player player;
 
-    public ToPlayerShootingPattern(GameScreen screen) {
+    public ToPlayerShootingPattern(GameLevelScreen screen) {
         super(screen);
         player = screen.getGameStage().getPlayer();
     }

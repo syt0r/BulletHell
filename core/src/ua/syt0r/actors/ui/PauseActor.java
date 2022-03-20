@@ -1,11 +1,8 @@
 package ua.syt0r.actors.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -17,7 +14,7 @@ import ua.syt0r.Utils;
 
 public class PauseActor extends Stack{
 
-    private SolidColorActor solidColorActor;
+    private SolidColorActor2 solidColorActor;
 
     private Table table;
 
@@ -25,7 +22,7 @@ public class PauseActor extends Stack{
 
     public PauseActor(Stage stage){
 
-        solidColorActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"),stage.getWidth(),stage.getHeight());
+        solidColorActor = new SolidColorActor2(Assets.loadingAtlas.findRegion("color"),stage.getWidth(),stage.getHeight());
 
         add(solidColorActor);
 

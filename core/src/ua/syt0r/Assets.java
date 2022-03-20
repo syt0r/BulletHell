@@ -35,21 +35,15 @@ public class Assets {
     }
 
     public static void load(String fileName, Class<?> classType){
-
         assetManager.load(fileName,classType);
-
     }
 
     public static <T> T get(String resourceName, Class<T> classType){
-
         return assetManager.get(resourceName,classType);
-
     }
 
     public static boolean update(){
-
         return assetManager.update();
-
     }
 
     public static void dispose(){

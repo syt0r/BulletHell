@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -17,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ua.syt0r.*;
-import ua.syt0r.actors.ui.SolidColorActor;
 import ua.syt0r.levels.*;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
@@ -31,7 +29,7 @@ public class MainMenuScreen implements Screen {
 
     private Table table;
 
-    private SolidColorActor leftLineActor, rightLineActor;
+//    private SolidColorActor leftLineActor, rightLineActor;
 
     private TextButton.TextButtonStyle normalButtonStyle;
 
@@ -68,8 +66,8 @@ public class MainMenuScreen implements Screen {
 
         stage.addActor(table);
 
-        leftLineActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"), stage.getWidth() * 8 / 1280, stage.getHeight());
-        rightLineActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"), stage.getWidth() * 8 / 1280, stage.getHeight());
+//        leftLineActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"), stage.getWidth() * 8 / 1280, stage.getHeight());
+//        rightLineActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"), stage.getWidth() * 8 / 1280, stage.getHeight());
 
 
 
@@ -168,7 +166,7 @@ public class MainMenuScreen implements Screen {
     private void showMainMenu(){
 
         //Left Line
-        table.add(leftLineActor);
+//        table.add(leftLineActor);
 
         //Buttons
 
@@ -216,7 +214,7 @@ public class MainMenuScreen implements Screen {
         table.add(buttonsTable).width(stage.getWidth()/3*1).expandY().top().padTop(stage.getWidth() * 200f /1280);
 
         //Right Line
-        table.add(rightLineActor);
+//        table.add(rightLineActor);
 
     }
 
@@ -233,7 +231,7 @@ public class MainMenuScreen implements Screen {
 
         //Levels
 
-        table.add(leftLineActor).left().padLeft( stage.getWidth() * 150 / 1280);
+//        table.add(leftLineActor).left().padLeft( stage.getWidth() * 150 / 1280);
 
         Table levelButtonsTable = getTextButtonTable();
 
@@ -268,7 +266,7 @@ public class MainMenuScreen implements Screen {
 
         table.add(levelButtonsTable).width(stage.getWidth() * 200 / 1280).growY().left().padTop((stage.getWidth() * 130 / 1280)).padBottom((stage.getWidth() * 100 / 1280));
 
-        table.add(rightLineActor).left();
+//        table.add(rightLineActor).left();
 
         //Details
 

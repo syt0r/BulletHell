@@ -1,45 +1,43 @@
 package ua.syt0r;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class GameManager extends Game {
 
-	private FPSLogger fpsLogger;
-	
-	@Override
-	public void create () {
+    private FPSLogger fpsLogger;
 
-		Assets.loadLoadingScreenAssets();
+    @Override
+    public void create() {
 
-		ScreenManager.getInstance().initialize(this);
-		ScreenManager.getInstance().showScreen(ScreenManager.ScreenEnum.MAIN_MENU);
+        Assets.loadLoadingScreenAssets();
 
-		fpsLogger = new FPSLogger();
-	}
+        ScreenManager.getInstance().initialize(this);
+        ScreenManager.getInstance().showScreen(ScreenManager.ScreenEnum.MAIN_MENU);
 
-	@Override
-	public void render () {
-		super.render();
-		fpsLogger.log();
-	}
+        fpsLogger = new FPSLogger();
+    }
 
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-	}
+    @Override
+    public void render() {
+        super.render();
+        fpsLogger.log();
+    }
 
-	@Override
-	public void dispose () {
-		super.dispose();
-		Assets.dispose();
-	}
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+    }
 
-	@Override
-	public void pause() {
-		super.pause();
-	}
+    @Override
+    public void dispose() {
+        super.dispose();
+        Assets.dispose();
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+    }
 
 }

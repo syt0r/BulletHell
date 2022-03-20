@@ -17,14 +17,14 @@ import ua.syt0r.actors.entities.Player;
 import ua.syt0r.levels.LevelInterface;
 import ua.syt0r.patterns.EntityMovementPattern;
 import ua.syt0r.patterns.bullet.EntityLinearMovementPattern;
-import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.GameLevelScreen;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
 public class GameStage extends Stage implements LevelInterface {
 
-    private GameScreen gameScreen;
+    private GameLevelScreen gameScreen;
 
 
     private static final int VIRTUAL_HEIGHT = 1280, VIRTUAL_WIDTH = 860;
@@ -55,7 +55,7 @@ public class GameStage extends Stage implements LevelInterface {
     //Performs default linear movement
     private EntityMovementPattern entityLinearMovementPattern;
 
-    public GameStage(GameScreen gameScreen){
+    public GameStage(GameLevelScreen gameScreen){
 
         this.gameScreen = gameScreen;
 

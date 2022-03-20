@@ -8,9 +8,9 @@ import ua.syt0r.patterns.move.TriangleMovementPattern;
 import ua.syt0r.patterns.shoot.FireBarrageShootingPattern;
 import ua.syt0r.patterns.shoot.SimpleShootingPattern;
 import ua.syt0r.patterns.shoot.ToPlayerShootingPattern;
-import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.GameLevelScreen;
 
-public class Level4 extends GameScreen {
+public class Level4 extends GameLevelScreen {
 
     @Override
     public void preLoad() {

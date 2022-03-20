@@ -2,11 +2,11 @@ package ua.syt0r.patterns.shoot;
 
 import ua.syt0r.actors.entities.Enemy;
 import ua.syt0r.patterns.ShootingPattern;
-import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.GameLevelScreen;
 
 public class SimpleShootingPattern extends ShootingPattern {
 
-    public SimpleShootingPattern(GameScreen screen) {
+    public SimpleShootingPattern(GameLevelScreen screen) {
         super(screen);
     }
 

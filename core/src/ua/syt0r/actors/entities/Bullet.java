@@ -3,32 +3,19 @@ package ua.syt0r.actors.entities;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Pool;
 import ua.syt0r.Assets;
-import ua.syt0r.GameManager;
 
-public class Bullet extends Entity implements Pool.Poolable{
-
-    public static final class BulletType{
-        public static final int A = 1;
-    }
-
-    public static final class Collide{
-        public static final int PLAYER = 1;
-        public static final int ENEMY = 2;
-    }
+public class Bullet extends Entity implements Pool.Poolable {
 
     private int bulletType;
     private int collideEntity;
-
     private boolean isAlive;
 
-    public Bullet(){
-
+    public Bullet() {
         super();
         isAlive = false;
-
     }
 
-    public void init(int bulletType, int collideEntity, float x, float y){
+    public void init(int bulletType, int collideEntity, float x, float y) {
 
         isAlive = true;
         this.bulletType = bulletType;
@@ -36,7 +23,7 @@ public class Bullet extends Entity implements Pool.Poolable{
 
         float width, height;
 
-        switch (bulletType){
+        switch (bulletType) {
 
             default:
             case 1:
@@ -46,11 +33,11 @@ public class Bullet extends Entity implements Pool.Poolable{
 
         }
 
-        setBounds(x,y,width,height);
+        setBounds(x, y, width, height);
 
-        setBody(x,y,15);
+        setBody(x, y, 15);
 
-        setTexture(Assets.get("game.atlas",TextureAtlas.class).findRegion("bullet_long"));
+        setTexture(Assets.get("game.atlas", TextureAtlas.class).findRegion("bullet_long"));
 
     }
 
@@ -63,17 +50,25 @@ public class Bullet extends Entity implements Pool.Poolable{
 
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
 
     public void setAlive(boolean alive) {
         isAlive = alive;
     }
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
     public int getCollideEntity() {
         return collideEntity;
+    }
+
+    public static final class BulletType {
+        public static final int A = 1;
+    }
+
+    public static final class Collide {
+        public static final int PLAYER = 1;
+        public static final int ENEMY = 2;
     }
 
 }

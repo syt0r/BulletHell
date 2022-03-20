@@ -4,14 +4,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import ua.syt0r.Assets;
 import ua.syt0r.actors.entities.Enemy;
-import ua.syt0r.patterns.move.LinearMovementPattern;
 import ua.syt0r.patterns.move.TriangleMovementPattern;
 import ua.syt0r.patterns.shoot.FireBarrageShootingPattern;
 import ua.syt0r.patterns.shoot.SimpleShootingPattern;
 import ua.syt0r.patterns.shoot.ToPlayerShootingPattern;
-import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.GameLevelScreen;
 
-public class Level2 extends GameScreen {
+public class Level2 extends GameLevelScreen {
 
     @Override
     public void preLoad() {

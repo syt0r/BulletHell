@@ -12,12 +12,12 @@ import ua.syt0r.Utils;
 
 public class DiedActor extends Stack {
 
-    private SolidColorActor solidColorActor;
+    private SolidColorActor2 solidColorActor;
     private TextButton textButton;
 
     public DiedActor(Stage stage){
 
-        solidColorActor = new SolidColorActor(Assets.loadingAtlas.findRegion("color"),stage.getWidth(),stage.getHeight());
+        solidColorActor = new SolidColorActor2(Assets.loadingAtlas.findRegion("color"),stage.getWidth(),stage.getHeight());
         add(solidColorActor);
 
         BitmapFont pauseFont = Utils.generateFont("MunroSmall.ttf", (int) (Gdx.graphics.getWidth() * 100f / 1280));

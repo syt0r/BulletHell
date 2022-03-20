@@ -2,13 +2,13 @@ package ua.syt0r.patterns.shoot;
 
 import ua.syt0r.actors.entities.Enemy;
 import ua.syt0r.patterns.ShootingPattern;
-import ua.syt0r.screens.GameScreen;
+import ua.syt0r.screens.GameLevelScreen;
 
 public class FireBarrageShootingPattern extends ShootingPattern {
 
     float angleDelta = 0;
 
-    public FireBarrageShootingPattern(GameScreen screen) {
+    public FireBarrageShootingPattern(GameLevelScreen screen) {
         super(screen);
     }
 
