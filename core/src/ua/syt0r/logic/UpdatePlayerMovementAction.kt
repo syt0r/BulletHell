@@ -13,7 +13,7 @@ class UpdatePlayerMovementAction : Action() {
         val desiredX = actor.x + PlayerInput.input.x * delta * SPEED
         val desiredY = actor.y + PlayerInput.input.y * delta * SPEED
         actor.x = desiredX.clamp(0f, GameLogic.WORLD_WIDTH - actor.width)
-        actor.y = desiredY.clamp(0f, GameLogic.WORLD_HEIGHT - actor.y)
+        actor.y = desiredY.clamp(0f, GameLogic.WORLD_HEIGHT - actor.height)
         return false
     }
 

@@ -2,7 +2,7 @@ package ua.syt0r.logic
 
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
-import ua.syt0r.screens.modern.GameStage
+import ua.syt0r.screens.game.stage.GameStage
 import kotlin.math.atan2
 
 class ShootAtPlayerAction(

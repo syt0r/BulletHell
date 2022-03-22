@@ -1,8 +1,8 @@
 package ua.syt0r.logic
 
 import com.badlogic.gdx.scenes.scene2d.Action
-import ua.syt0r.actors.EnemyConfiguration
-import ua.syt0r.screens.modern.GameStage
+import ua.syt0r.level.EnemyConfiguration
+import ua.syt0r.screens.game.stage.GameStage
 
 class SpawnEnemyAction(
     val configuration: EnemyConfiguration
