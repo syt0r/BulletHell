@@ -1,4 +1,4 @@
-package ua.syt0r.logic
+package ua.syt0r.logic.action
 
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction

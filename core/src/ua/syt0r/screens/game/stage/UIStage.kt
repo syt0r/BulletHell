@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.utils.viewport.ScreenViewport
@@ -19,7 +20,7 @@ class UIStage(
 ) : Stage() {
 
     val loadingUI = LoadingActor()
-    lateinit var gameUI: Group
+    lateinit var gameUI: WidgetGroup
 
     init {
         viewport = ScreenViewport()
@@ -39,13 +40,6 @@ class UIStage(
         )
         val rightTop = gameStage.viewport.project(
             Vector2(GameLogic.WORLD_WIDTH, GameLogic.WORLD_HEIGHT)
-        )
-
-        val leftSideActor = SolidColorActor(
-            0f, 0f, leftBottom.x, rightTop.y
-        )
-        val rightSideActor = SolidColorActor(
-            rightTop.x, 0f, leftBottom.x, rightTop.y
         )
 
         val atlas = Assets.gameAtlas
@@ -70,18 +64,18 @@ class UIStage(
         })
 
         val movementControlActor = MovementControlActor(atlas).apply {
-            width = leftSideActor.width * 2 / 3
+            width = leftBottom.x * 2 / 3
             height = width
 
-            x = leftSideActor.width / 3
+            x = leftBottom.x / 3
             y = x
         }
         movementControlActor.resize(gameStage.viewport, viewport.screenWidth, viewport.screenHeight)
 
         val fireControlActor = FireControlActor(atlas).apply {
-            x = rightTop.x + leftSideActor.width / 3
+            x = rightTop.x + leftBottom.x / 3
             y = movementControlActor.y
-            width = leftSideActor.width * 2 / 3
+            width = leftBottom.x * 2 / 3
             height = width
         }
 
@@ -92,10 +86,9 @@ class UIStage(
             y = viewport.screenHeight - height
         }
 
-        gameUI = Group()
+        gameUI = WidgetGroup()
         gameUI.addActors(
-            leftSideActor,
-            rightSideActor,
+            GameBackgroundActor(gameStage),
             playerHealthActor,
             movementControlActor,
             fireControlActor,

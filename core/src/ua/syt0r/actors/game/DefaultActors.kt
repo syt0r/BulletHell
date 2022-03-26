@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Circle
 import com.badlogic.gdx.math.Vector2
 import ua.syt0r.level.EnemyConfiguration
+import ua.syt0r.logic.CollisionBody
 import ua.syt0r.logic.GameLogic
 
 fun createPlayer(textureAtlas: TextureAtlas): GameActor {

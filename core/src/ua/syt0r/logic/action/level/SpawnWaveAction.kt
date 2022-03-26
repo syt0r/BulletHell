@@ -1,16 +1,17 @@
-package ua.syt0r.logic
+package ua.syt0r.logic.action.level
 
 import com.badlogic.gdx.scenes.scene2d.Action
 import ua.syt0r.level.Wave
-import ua.syt0r.screens.game.stage.GameStage
+import ua.syt0r.screens.game.GameField
 
 class SpawnWaveAction(
-    val wave: Wave
+    private val gameField: GameField,
+    private val wave: Wave
 ) : Action() {
 
     override fun act(delta: Float): Boolean {
         wave.enemies.forEach {
-            (actor.stage as GameStage).spawnEnemy(it)
+            gameField.addEnemy(it)
         }
         return true
     }

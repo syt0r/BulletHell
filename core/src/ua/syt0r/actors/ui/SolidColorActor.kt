@@ -10,7 +10,8 @@ class SolidColorActor(
     x: Float,
     y: Float,
     width: Float,
-    height: Float
+    height: Float,
+    color: Color = Color.valueOf("5e5e5e")
 ) : Actor() {
 
     private val texture: Texture
@@ -18,7 +19,7 @@ class SolidColorActor(
     init {
         setBounds(x, y, width, height)
         val pixmap = Pixmap(1, 1, Pixmap.Format.RGB888)
-        pixmap.setColor(Color.valueOf("5e5e5e"))
+        pixmap.setColor(color)
         pixmap.fill()
         texture = Texture(pixmap)
         pixmap.dispose()

@@ -1,44 +1,32 @@
-package ua.syt0r;
+package ua.syt0r
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.FPSLogger;
-import ua.syt0r.screens.main.MainMenuScreen;
+import com.badlogic.gdx.Game
+import com.badlogic.gdx.Screen
+import com.badlogic.gdx.graphics.FPSLogger
+import ua.syt0r.Assets.loadLoadingScreenAssets
+import ua.syt0r.screens.main.MainMenuScreen
 
-public class GameManager extends Game {
+class GameManager(
+    private val initialScreenCreator: () -> Screen = { MainMenuScreen() }
+) : Game() {
 
-    private FPSLogger fpsLogger;
+    private lateinit var fpsLogger: FPSLogger
 
-    @Override
-    public void create() {
-
-        Assets.loadLoadingScreenAssets();
-
-        ScreenManager.getInstance().initialize(this);
-        ScreenManager.getInstance().showScreen(new MainMenuScreen());
-
-        fpsLogger = new FPSLogger();
+    override fun create() {
+        loadLoadingScreenAssets()
+        ScreenManager.getInstance().initialize(this)
+        ScreenManager.getInstance().showScreen(initialScreenCreator())
+        fpsLogger = FPSLogger()
     }
 
-    @Override
-    public void render() {
-        super.render();
-        fpsLogger.log();
+    override fun render() {
+        super.render()
+        fpsLogger.log()
     }
 
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        Assets.dispose();
-    }
-
-    @Override
-    public void pause() {
-        super.pause();
+    override fun dispose() {
+        super.dispose()
+        Assets.dispose()
     }
 
 }

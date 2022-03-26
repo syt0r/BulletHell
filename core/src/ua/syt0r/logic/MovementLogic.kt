@@ -1,4 +1,4 @@
-package ua.syt0r.patterns
+package ua.syt0r.logic
 
 import com.badlogic.gdx.math.Vector2
 

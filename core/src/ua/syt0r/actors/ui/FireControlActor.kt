@@ -9,9 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.Viewport
-import ua.syt0r.logic.PlayerInput
 
 class FireControlActor(atlas: TextureAtlas) : Actor() {
+
     private val center: Vector2
     private val defaultTexture: TextureRegion
 
@@ -36,12 +36,10 @@ class FireControlActor(atlas: TextureAtlas) : Actor() {
     class FireButtonInput : ClickListener() {
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-            PlayerInput.isFiring = true
             return super.touchDown(event, x, y, pointer, button)
         }
 
         override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-            PlayerInput.isFiring = false
             super.touchUp(event, x, y, pointer, button)
         }
 

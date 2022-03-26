@@ -1,6 +1,7 @@
 package ua.syt0r.actors.game
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import ua.syt0r.logic.CollisionBody
 import ua.syt0r.logic.HealthChangeListener
 
 class GameActor(
